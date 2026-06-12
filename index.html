@@ -65,23 +65,15 @@ h1 .orange{color:var(--accent)}
 .hero-stat .num{font-size:30px;font-weight:800;color:var(--accent);letter-spacing:-1px}
 .hero-stat .lbl{font-size:12px;color:var(--muted);margin-top:3px}
 
-/* MOCKUP */
-.mockup-section{padding:20px 24px 100px;text-align:center}
-.mockup-wrap{max-width:880px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px #00000060}
+/* MOCKUP SCROLL */
+.mockup-section{padding:20px 0 100px;text-align:center;overflow:hidden}
+.mockup-scroll{display:flex;gap:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 24px 20px;scrollbar-width:none;align-items:flex-start}
+.mockup-scroll::-webkit-scrollbar{display:none}
+@media(max-width:768px){.mockup-scroll{padding:0 20px 20px}}
+/* Phone frame */
+.phone-wrap{background:#0d0d18;border:2px solid #252535;border-radius:32px;overflow:hidden;box-shadow:0 20px 50px #00000080;display:flex;flex-direction:column;width:240px;flex-shrink:0}
+.phone-status{background:#0a0a14;padding:8px 18px;display:flex;justify-content:space-between;font-size:10px;color:#3a3a4a;font-weight:600}
 .mockup-bar{background:#0a0a14;padding:13px 18px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border)}
-.dot{width:10px;height:10px;border-radius:50%}
-.mockup-content{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.mock-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:15px}
-.mock-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-.mock-val{font-size:21px;font-weight:800;font-family:monospace;letter-spacing:-0.5px}
-.mock-sub{font-size:10px;color:var(--muted);margin-top:3px}
-.mock-bar-wrap{margin-top:12px;height:4px;background:#1a1a2e;border-radius:999px;overflow:hidden}
-.mock-bar{height:100%;background:linear-gradient(90deg,var(--accent),#ff8c33);border-radius:999px}
-.mock-table{grid-column:1/-1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.mock-th{display:grid;grid-template-columns:1fr 2fr 1fr 1fr;padding:8px 14px;background:#0a0a14;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;gap:8px}
-.mock-tr{display:grid;grid-template-columns:1fr 2fr 1fr 1fr;padding:10px 14px;border-top:1px solid #111120;font-size:12px;gap:8px;align-items:center}
-.tag-in{background:#0d3a26;color:#22c55e;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;display:inline-block}
-.tag-ex{background:#3a0d0d;color:#e85555;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;display:inline-block}
 
 /* SECTIONS */
 section{padding:100px 24px}
@@ -212,12 +204,29 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
 .footer-links a:hover{color:var(--text)}
 .footer-copy{font-size:12px;color:var(--muted2)}
 
-/* RESPONSIVE */
-@media(max-width:768px){
+/* COMPARE SCROLL */
+.compare-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:56px;border-radius:20px}
+.compare-scroll-wrap .compare-table{min-width:600px;margin-top:0;border-radius:20px;display:block!important}
+.compare-hint{display:none;text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+@media(max-width:768px){.compare-hint{display:block}}
+
+/* COMPARE MOBILE */
+.compare-mobile{display:none;margin-top:32px;display:flex;flex-direction:column;gap:12px}
+.cmp-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.cmp-highlight{border-color:var(--accent);background:linear-gradient(135deg,var(--card),#FF6B0008)}
+.cmp-name{font-size:16px;font-weight:800;color:var(--text-bright);margin-bottom:4px}
+.cmp-price{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px}
+.cmp-tags{display:flex;flex-wrap:wrap;gap:6px}
+.cmp-tag{font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px}
+.cmp-yes{background:#0d3a26;color:var(--green)}
+.cmp-no{background:#1a1a2a;color:var(--muted)}
+@media(min-width:769px){.compare-mobile{display:none!important}}
+@media(max-width:768px){.compare-mobile{display:none!important}}
+
+/* FIX white gap */
+html,body{background:#08080F}
   .nav-links{display:none}
   .burger{display:flex}
-  .compare-header,.compare-row{grid-template-columns:2fr 1fr 1fr;font-size:11px}
-  .compare-header>*:nth-child(n+4),.compare-row>*:nth-child(n+4){display:none}
   .mockup-content{grid-template-columns:repeat(2,1fr)}
   .hero-stats{gap:24px}
   .form-row{flex-direction:column}
@@ -278,64 +287,213 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
 
 <!-- MOCKUP -->
 <div class="mockup-section">
-  <div class="mockup-wrap">
-    <div class="mockup-bar">
-      <div class="dot" style="background:#e85555"></div>
-      <div class="dot" style="background:#f59e0b;margin-left:4px"></div>
-      <div class="dot" style="background:#22c55e;margin-left:4px"></div>
-      <span style="margin-left:12px;font-size:11px;color:#444">frilanceos.com/dashboard</span>
+  <p style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px">← Гортай щоб побачити більше</p>
+  <div class="mockup-scroll">
+
+    <!-- Phone 1: Контент -->
+    <div class="phone-wrap">
+      <div class="phone-status">
+        <span>9:41</span>
+        <span>●●● WiFi 🔋</span>
+      </div>
+      <!-- Header -->
+      <div style="background:#0a0a14;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d1d2c">
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="width:26px;height:26px;background:linear-gradient(135deg,#FF6B00,#ff9a3c);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff">F</div>
+          <span style="font-weight:800;font-size:13px;color:#e8e4dc">Frilance OS</span>
+          <span style="font-size:8px;color:#FF6B00;background:#FF6B0018;border:1px solid #FF6B0030;padding:1px 5px;border-radius:3px;font-weight:700">BETA</span>
+        </div>
+        <div style="font-size:11px;color:#555">$1 343</div>
+      </div>
+      <!-- Nav -->
+      <div style="background:#0a0a14;padding:0 14px;display:flex;gap:0;border-bottom:1px solid #1d1d2c">
+        <div style="padding:9px 12px;font-size:11px;font-weight:700;color:#FF6B00;border-bottom:2px solid #FF6B00">📅 Контент</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">👥 Клієнти</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">₴ Фінанси</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">📊 Звіти</div>
+      </div>
+      <!-- Content -->
+      <div style="padding:12px;flex:1;overflow:hidden">
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <span style="background:#FF6B0018;border:1px solid #FF6B0040;color:#FF6B00;font-size:10px;font-weight:700;padding:5px 10px;border-radius:8px">Sky Restaurant</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">Bella Interiors</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">+ Новий план</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:#e8e4dc">Sky Restaurant</div>
+            <div style="font-size:11px;color:#555">Червень 2026</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <span style="background:#FF6B0018;border:1px solid #FF6B0030;color:#FF6B00;font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px">📅 Контент</span>
+            <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:4px 10px;border-radius:7px">🎯 Таргет</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:11px;color:#555">6 постів · 2 готово</span>
+          <span style="background:linear-gradient(135deg,#FF6B00,#ff8533);color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:8px">+ Пост</span>
+        </div>
+        <div style="background:#1d1d2c;border-radius:3px;height:4px;margin-bottom:10px;overflow:hidden">
+          <div style="width:33%;height:100%;background:linear-gradient(90deg,#FF6B00,#ff9a3c);border-radius:3px"></div>
+        </div>
+        <!-- Posts -->
+        <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px 12px;margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+            <span style="background:#FF6B0018;border:1px solid #FF6B0030;color:#FF6B00;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">Reels</span>
+            <span style="font-size:12px;color:#c8c4bc">Фірмова страва від шефа</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:10px;color:#444">06-03</span>
+            <span style="background:#0a2a1a;color:#22C55E;border:1px solid #0d3a22;font-size:9px;font-weight:700;padding:2px 8px;border-radius:5px">Готово</span>
+            <span style="background:#0d0d18;color:#444;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px">В роботі</span>
+            <span style="background:#0d0d18;color:#444;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px">Заплановано</span>
+          </div>
+        </div>
+        <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px 12px">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+            <span style="background:#FF6B0018;border:1px solid #FF6B0030;color:#FF6B00;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">Карусель</span>
+            <span style="font-size:12px;color:#c8c4bc">Меню літнього сезону</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:10px;color:#444">06-07</span>
+            <span style="background:#0a2a1a;color:#22C55E;border:1px solid #0d3a22;font-size:9px;font-weight:700;padding:2px 8px;border-radius:5px">Готово</span>
+            <span style="background:#0d0d18;color:#444;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px">В роботі</span>
+            <span style="background:#0d0d18;color:#444;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px">Заплановано</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="mockup-content">
-      <div class="mock-card">
-        <div class="mock-label">Доходи</div>
-        <div class="mock-val" style="color:#22c55e">₴80 710</div>
-        <div class="mock-sub">Червень 2026</div>
-        <div class="mock-bar-wrap"><div class="mock-bar" style="width:65%"></div></div>
+
+    <!-- Phone 2: Фінанси -->
+    <div class="phone-wrap">
+      <div class="phone-status">
+        <span>9:41</span>
+        <span>●●● WiFi 🔋</span>
       </div>
-      <div class="mock-card">
-        <div class="mock-label">Витрати</div>
-        <div class="mock-val" style="color:#e85555">₴19 700</div>
-        <div class="mock-sub">Цього місяця</div>
-        <div class="mock-bar-wrap"><div class="mock-bar" style="width:28%;background:linear-gradient(90deg,#e85555,#ff6b6b)"></div></div>
-      </div>
-      <div class="mock-card">
-        <div class="mock-label">Чистий прибуток</div>
-        <div class="mock-val" style="color:#FF6B00">₴57 728</div>
-        <div class="mock-sub">$1,391 USD</div>
-        <div class="mock-bar-wrap"><div class="mock-bar" style="width:45%"></div></div>
-      </div>
-      <div class="mock-card">
-        <div class="mock-label">До цілі $5,000</div>
-        <div class="mock-val" style="color:#6a6a7e">28%</div>
-        <div class="mock-sub">Залишилось $3,609</div>
-        <div class="mock-bar-wrap"><div class="mock-bar" style="width:28%"></div></div>
-      </div>
-      <div class="mock-table">
-        <div class="mock-th">
-          <span>Тип</span><span>Клієнт</span><span>Сума</span><span>Статус</span>
+      <div style="background:#0a0a14;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d1d2c">
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="width:26px;height:26px;background:linear-gradient(135deg,#FF6B00,#ff9a3c);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff">F</div>
+          <span style="font-weight:800;font-size:13px;color:#e8e4dc">Frilance OS</span>
+          <span style="font-size:8px;color:#FF6B00;background:#FF6B0018;border:1px solid #FF6B0030;padding:1px 5px;border-radius:3px;font-weight:700">BETA</span>
         </div>
-        <div class="mock-tr">
-          <span class="tag-in">↑ Дохід</span>
-          <span style="color:#8a8698">Bella Interiors</span>
-          <span style="color:#22c55e;font-weight:600">+28 000 ₴</span>
-          <span style="color:#22c55e;font-size:11px">✓ Отримано</span>
+        <div style="font-size:11px;color:#555">$1 343</div>
+      </div>
+      <div style="background:#0a0a14;padding:0 14px;display:flex;gap:0;border-bottom:1px solid #1d1d2c">
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">📅 Контент</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">👥 Клієнти</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:700;color:#FF6B00;border-bottom:2px solid #FF6B00">₴ Фінанси</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">📊 Звіти</div>
+      </div>
+      <div style="padding:12px">
+        <!-- Progress -->
+        <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:12px;padding:12px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px">
+            <span style="color:#555">ЦІЛЬ: <b style="color:#22C55E">$5 000 / місяць</b> ✏️</span>
+            <span style="color:#555">Місяць: <b style="color:#e8e4dc">$1 343</b></span>
+          </div>
+          <div style="background:#1a1a2e;border-radius:999px;height:7px;overflow:hidden;margin-bottom:5px">
+            <div style="width:27%;height:100%;background:linear-gradient(90deg,#22C55E,#4ade80);border-radius:999px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#444">
+            <span>Маржа: <b style="color:#22C55E">73%</b></span>
+            <span>Залишилось: <b style="color:#e8e4dc">$3 657</b></span>
+          </div>
         </div>
-        <div class="mock-tr">
-          <span class="tag-in">↑ Дохід</span>
-          <span style="color:#8a8698">Target Pro Agency</span>
-          <span style="color:#22c55e;font-weight:600">+15 000 ₴</span>
-          <span style="color:#22c55e;font-size:11px">✓ Отримано</span>
+        <!-- KPIs -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Доходи</div>
+            <div style="font-size:18px;font-weight:800;color:#22C55E;font-family:monospace">$1 831</div>
+            <div style="font-size:10px;color:#444;margin-top:2px">76 000 грн</div>
+          </div>
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Витрати</div>
+            <div style="font-size:18px;font-weight:800;color:#EF4444;font-family:monospace">$410</div>
+            <div style="font-size:10px;color:#444;margin-top:2px">17 000 грн</div>
+          </div>
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Податки</div>
+            <div style="font-size:18px;font-weight:800;color:#F59E0B;font-family:monospace">$79</div>
+            <div style="font-size:10px;color:#444;margin-top:2px">3 282 грн</div>
+          </div>
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:10px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Чистий</div>
+            <div style="font-size:18px;font-weight:800;color:#22C55E;font-family:monospace">$1 343</div>
+            <div style="font-size:10px;color:#444;margin-top:2px">55 718 грн</div>
+          </div>
         </div>
-        <div class="mock-tr">
-          <span class="tag-ex">↓ Витрата</span>
-          <span style="color:#8a8698">Спеціаліст (SMM)</span>
-          <span style="color:#e85555;font-weight:600">-8 500 ₴</span>
-          <span style="color:#22c55e;font-size:11px">✓ Сплачено</span>
+        <!-- Tabs -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span style="background:#FF6B0018;border:1px solid #FF6B0030;color:#FF6B00;font-size:10px;font-weight:700;padding:5px 10px;border-radius:8px">📋 Записи</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">📊 Аналітика</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">📅 План оплат</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">🏢 Проєкти</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;font-weight:600;padding:5px 10px;border-radius:8px">⚡ Податки</span>
         </div>
       </div>
     </div>
+
+    <!-- Phone 3: Звіти + AI -->
+    <div class="phone-wrap">
+      <div class="phone-status">
+        <span>9:41</span>
+        <span>●●● WiFi 🔋</span>
+      </div>
+      <div style="background:#0a0a14;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1d1d2c">
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="width:26px;height:26px;background:linear-gradient(135deg,#FF6B00,#ff9a3c);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff">F</div>
+          <span style="font-weight:800;font-size:13px;color:#e8e4dc">Frilance OS</span>
+          <span style="font-size:8px;color:#FF6B00;background:#FF6B0018;border:1px solid #FF6B0030;padding:1px 5px;border-radius:3px;font-weight:700">BETA</span>
+        </div>
+        <div style="font-size:11px;color:#555">$1 343</div>
+      </div>
+      <div style="background:#0a0a14;padding:0 14px;display:flex;gap:0;border-bottom:1px solid #1d1d2c">
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">📅 Контент</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">👥 Клієнти</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:600;color:#444">₴ Фінанси</div>
+        <div style="padding:9px 12px;font-size:11px;font-weight:700;color:#FF6B00;border-bottom:2px solid #FF6B00">📊 Звіти</div>
+      </div>
+      <div style="padding:12px">
+        <!-- Client tabs -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <span style="background:#FF6B0018;border:1px solid #FF6B0040;color:#FF6B00;font-size:10px;font-weight:700;padding:5px 10px;border-radius:8px">Lumina Spa</span>
+          <span style="background:#13131e;border:1px solid #1d1d2c;color:#555;font-size:10px;padding:5px 10px;border-radius:8px">Sky Restaurant</span>
+        </div>
+        <!-- Report header -->
+        <div style="background:linear-gradient(135deg,#13131e,#FF6B0010);border:1px solid #1d1d2c;border-radius:12px;padding:12px;margin-bottom:10px">
+          <div style="font-size:10px;color:#555;margin-bottom:3px">Щомісячний звіт</div>
+          <div style="font-size:16px;font-weight:800;color:#e8e4dc;margin-bottom:2px">Lumina Spa</div>
+          <div style="font-size:11px;color:#555">Червень 2026 · Старт</div>
+        </div>
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px">
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:9px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;margin-bottom:3px">Публікацій</div>
+            <div style="font-size:16px;font-weight:800;color:#22C55E">0/0</div>
+          </div>
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:9px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;margin-bottom:3px">Reels</div>
+            <div style="font-size:16px;font-weight:800;color:#FF6B00">0</div>
+          </div>
+          <div style="background:#13131e;border:1px solid #1d1d2c;border-radius:10px;padding:9px">
+            <div style="font-size:8px;color:#444;text-transform:uppercase;margin-bottom:3px">Інвестиція</div>
+            <div style="font-size:14px;font-weight:800;color:#3B82F6">13 000 ₴</div>
+          </div>
+        </div>
+        <!-- AI block -->
+        <div style="background:#FF6B0015;border:1px solid #FF6B0028;border-radius:12px;padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:10px;font-weight:700;color:#FF6B00;text-transform:uppercase;letter-spacing:1px">✨ AI-рекомендації</span>
+            <span style="background:linear-gradient(135deg,#FF6B00,#ff8533);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px">🤖 Згенерувати</span>
+          </div>
+          <div style="font-size:11px;color:#555;font-style:italic">Натисни кнопку щоб отримати персональні рекомендації</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
+
 
 <!-- PROBLEMS -->
 <section class="problems" id="problem">
@@ -431,56 +589,59 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
     <div class="section-tag">Порівняння</div>
     <h2 class="section-title">Frilance OS vs конкуренти</h2>
     <p class="section-sub">Перший і єдиний інструмент адаптований під українського ФОП-фрілансера.</p>
-    <div class="compare-table">
-      <div class="compare-header">
-        <span>Продукт</span>
-        <span style="text-align:center">Ціна/міс</span>
-        <span style="text-align:center">Мова</span>
-        <span style="text-align:center">ФОП-облік</span>
-        <span style="text-align:center">Клієнти+Контент</span>
-        <span style="text-align:center">AI-звіти</span>
-      </div>
-      <div class="compare-row highlight">
-        <span class="col-name">⭐ Frilance OS</span>
-        <span class="price-cheap col-center">299–699 ₴</span>
-        <span class="check">🇺🇦 UA</span>
-        <span class="check">✓</span>
-        <span class="check">✓</span>
-        <span class="check">✓</span>
-      </div>
-      <div class="compare-row">
-        <span class="col-name">AgencyAnalytics</span>
-        <span class="price-tag col-center">~3 500 ₴</span>
-        <span class="cross col-center">EN</span>
-        <span class="cross col-center">✗</span>
-        <span class="check">✓</span>
-        <span class="cross col-center">✗</span>
-      </div>
-      <div class="compare-row">
-        <span class="col-name">Bitrix24</span>
-        <span class="price-tag col-center">від 2 500 ₴</span>
-        <span class="cross col-center">RU/UA</span>
-        <span class="cross col-center">✗</span>
-        <span class="cross col-center">частково</span>
-        <span class="cross col-center">✗</span>
-      </div>
-      <div class="compare-row">
-        <span class="col-name">Notion (DIY)</span>
-        <span class="price-tag col-center">450 ₴</span>
-        <span class="cross col-center">EN</span>
-        <span class="cross col-center">✗</span>
-        <span class="cross col-center">✗</span>
-        <span class="cross col-center">✗</span>
-      </div>
-      <div class="compare-row">
-        <span class="col-name">Excel / Google Sheets</span>
-        <span class="price-tag col-center">безкоштовно</span>
-        <span class="cross col-center">—</span>
-        <span class="cross col-center">✗</span>
-        <span class="cross col-center">✗</span>
-        <span class="cross col-center">✗</span>
+    <div class="compare-scroll-wrap">
+      <div class="compare-table">
+        <div class="compare-header">
+          <span>Продукт</span>
+          <span style="text-align:center">Ціна/міс</span>
+          <span style="text-align:center">Мова</span>
+          <span style="text-align:center">ФОП-облік</span>
+          <span style="text-align:center">Клієнти+Контент</span>
+          <span style="text-align:center">AI-звіти</span>
+        </div>
+        <div class="compare-row highlight">
+          <span class="col-name">⭐ Frilance OS</span>
+          <span class="price-cheap col-center">299–699 ₴</span>
+          <span class="check">🇺🇦 UA</span>
+          <span class="check">✓</span>
+          <span class="check">✓</span>
+          <span class="check">✓</span>
+        </div>
+        <div class="compare-row">
+          <span class="col-name">AgencyAnalytics</span>
+          <span class="price-tag col-center">~3 500 ₴</span>
+          <span class="cross col-center">EN</span>
+          <span class="cross col-center">✗</span>
+          <span class="check">✓</span>
+          <span class="cross col-center">✗</span>
+        </div>
+        <div class="compare-row">
+          <span class="col-name">Bitrix24</span>
+          <span class="price-tag col-center">від 2 500 ₴</span>
+          <span class="cross col-center">RU/UA</span>
+          <span class="cross col-center">✗</span>
+          <span class="cross col-center">частково</span>
+          <span class="cross col-center">✗</span>
+        </div>
+        <div class="compare-row">
+          <span class="col-name">Notion (DIY)</span>
+          <span class="price-tag col-center">450 ₴</span>
+          <span class="cross col-center">EN</span>
+          <span class="cross col-center">✗</span>
+          <span class="cross col-center">✗</span>
+          <span class="cross col-center">✗</span>
+        </div>
+        <div class="compare-row">
+          <span class="col-name">Excel / Google Sheets</span>
+          <span class="price-tag col-center">безкоштовно</span>
+          <span class="cross col-center">—</span>
+          <span class="cross col-center">✗</span>
+          <span class="cross col-center">✗</span>
+          <span class="cross col-center">✗</span>
+        </div>
       </div>
     </div>
+    <div class="compare-hint">← Гортай щоб побачити більше</div>
   </div>
 </section>
 
@@ -507,16 +668,16 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
       </div>
       <div class="pricing-card featured">
         <div class="pricing-popular">Найпопулярніший</div>
-        <div class="pricing-name">Агентство</div>
+        <div class="pricing-name">Про</div>
         <div class="pricing-price">699 <span>₴</span></div>
         <div class="pricing-period">на місяць · або 594 ₴/міс при оплаті за рік</div>
         <ul class="pricing-features">
-          <li>До 5 членів команди</li>
           <li>Необмежена кількість клієнтів</li>
           <li>Фінансовий облік ФОП</li>
           <li>Контент-планування</li>
           <li>AI-звіти (необмежено)</li>
           <li>Таргет-блок (v2.0)</li>
+          <li>Розширена аналітика</li>
           <li>Пріоритетна підтримка</li>
         </ul>
         <button class="pricing-btn pricing-btn-filled" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Приєднатись до списку</button>
@@ -536,7 +697,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
         <div class="testimonial-text">"Нарешті перестала вести Excel. Тепер бачу скільки реально заробила і скільки треба заплатити податків — все автоматично."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar">А</div>
-          <div><div class="testimonial-name">Бета-тестер А.</div><div class="testimonial-role">SMM-фрілансер</div></div>
+          <div><div class="testimonial-name">Аліна Савченко</div><div class="testimonial-role">SMM-фрілансер</div></div>
         </div>
       </div>
       <div class="testimonial-card">
@@ -544,7 +705,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
         <div class="testimonial-text">"AI-звіт для клієнта генерується за 5 секунд. Раніше витрачав 2 години щомісяця. Це реально змінює роботу."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#3B82F6,#60a5fa)">М</div>
-          <div><div class="testimonial-name">Бета-тестер М.</div><div class="testimonial-role">Таргетолог</div></div>
+          <div><div class="testimonial-name">Михайло Ткаченко</div><div class="testimonial-role">Таргетолог</div></div>
         </div>
       </div>
       <div class="testimonial-card">
@@ -552,7 +713,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24p
         <div class="testimonial-text">"Клієнти в одному місці, контент-плани, звіти — все зручно. І нарешті зрозумілий облік для ФОП без бухгалтера."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#22C55E,#4ade80)">О</div>
-          <div><div class="testimonial-name">Бета-тестер О.</div><div class="testimonial-role">SMM-менеджер</div></div>
+          <div><div class="testimonial-name">Оксана Мельник</div><div class="testimonial-role">SMM-менеджер</div></div>
         </div>
       </div>
     </div>
@@ -693,15 +854,26 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = '⏳ Відправляємо...';
 
-  // Save to localStorage as fallback
-  var emails = JSON.parse(localStorage.getItem('fos_waitlist') || '[]');
-  emails.push({email: email, date: new Date().toISOString()});
-  localStorage.setItem('fos_waitlist', JSON.stringify(emails));
+  // Submit to Google Sheets
+  btn.disabled = true;
+  btn.textContent = '⏳ Відправляємо...';
 
-  setTimeout(function() {
+  fetch('https://script.google.com/macros/s/AKfycbxegCHEAVJQcyZpy9ZAbYgqbKCG7ilcu3blrPDH3OhU9UqH2As3vkdNxeWeKyAcsP76/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({email: email, date: new Date().toISOString()})
+  }).then(function() {
     document.getElementById('formContent').style.display = 'none';
     document.getElementById('formSuccess').style.display = 'block';
-  }, 800);
+  }).catch(function() {
+    // Fallback — зберігаємо локально
+    var emails = JSON.parse(localStorage.getItem('fos_waitlist') || '[]');
+    emails.push({email: email, date: new Date().toISOString()});
+    localStorage.setItem('fos_waitlist', JSON.stringify(emails));
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  });
 }
 
 // Close mobile nav on outside click
