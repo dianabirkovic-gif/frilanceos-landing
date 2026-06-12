@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#0b0b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Frilance OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0b14;--bg2:#10101c;--bg3:#0d0d17;
+  --card:#13131e;--border:#1d1d2c;--border2:#171724;
+  --accent:#FF6B00;--alow:#FF6B0015;--ahigh:#FF6B0028;
+  --green:#22C55E;--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;
+  --text:#b8b4ae;--muted:#424252;--subtle:#22223a;
+}
+html{background:#0b0b14}
+body{background:#0b0b14;color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;min-height:-webkit-fill-available;-webkit-tap-highlight-color:transparent}
+/* Fill safe area on iOS with dark color */
+body::before{content:'';position:fixed;inset:0;background:#0b0b14;z-index:-1}
+button,select,input,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:2px}
+
+/* HEADER */
+.hdr{background:rgba(9,9,20,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 18px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#FF6B00,#ff9a3c);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff;box-shadow:0 2px 12px #FF6B0040}
+.logo-name{font-weight:800;font-size:16px;letter-spacing:-0.3px}
+.logo-badge{font-size:9px;color:var(--accent);background:var(--alow);border:1px solid var(--ahigh);padding:2px 7px;border-radius:5px;font-weight:700;letter-spacing:1.2px}
+.hdr-right{display:flex;align-items:center;gap:12px;font-size:13px}
+.hdr-stat .lbl{font-size:9px;color:var(--muted);text-align:right;margin-bottom:1px;letter-spacing:0.8px;text-transform:uppercase}
+.hdr-stat .val{font-size:18px;font-weight:800;font-family:monospace;letter-spacing:-0.5px}
+.circle{width:42px;height:42px;border-radius:50%;background:var(--bg2);border:1.5px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s}
+.circle:hover{border-color:var(--accent)}
+.circle .pct{font-size:11px;font-weight:700;color:var(--green)}
+.circle .clbl{font-size:8px;color:var(--muted)}
+.btn-csv{background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s}
+.btn-csv:hover{color:var(--text);border-color:#333}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .3s;box-shadow:0 0 6px var(--green)}
+.save-dot.show{opacity:1}
+
+/* NAV */
+.nav{background:rgba(9,9,20,0.9);border-bottom:1px solid var(--border);padding:0 18px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{background:#0b0b14;border:none;cursor:pointer;padding:14px 16px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;position:relative}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.nav-btn:active{opacity:0.7}
+
+/* MAIN */
+.main{max-width:960px;margin:0 auto;padding:18px 14px 80px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px}
+.card-pad{padding:18px}
+
+/* BUTTONS */
+.btn-accent{background:linear-gradient(135deg,#FF6B00,#ff8533);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 10px #FF6B0030}
+.btn-accent:hover{box-shadow:0 4px 18px #FF6B0050;transform:translateY(-1px)}
+.btn-accent:active{transform:translateY(0);box-shadow:0 1px 6px #FF6B0030}
+.btn-green{background:linear-gradient(135deg,#22C55E,#16a34a);color:#080810;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 14px #22C55E30}
+.btn-ghost{background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:9px 15px;font-size:13px;cursor:pointer;transition:all .15s}
+.btn-ghost:hover{color:var(--text);border-color:#3a3a4a;background:#ffffff04}
+.btn-danger{background:#EF444415;color:var(--red);border:1px solid #EF444430;border-radius:9px;padding:7px 13px;font-size:12px;cursor:pointer;transition:all .15s}
+.btn-danger:hover{background:#EF444425}
+
+/* INPUTS */
+.inp{background:var(--bg3);border:1px solid #1e1e30;color:var(--text);border-radius:10px;padding:10px 13px;font-size:14px;width:100%;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px #FF6B0012}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:200;align-items:flex-end;justify-content:center;padding-bottom:0}
+@media(min-width:600px){.overlay{align-items:center;padding-bottom:0}}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+@media(min-width:600px){.modal{border-radius:20px;padding:24px}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;display:block}
+@media(min-width:600px){.modal-handle{display:none}}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:18px;letter-spacing:-0.3px}
+.modal-footer{display:flex;gap:8px;margin-top:16px}
+.modal-footer .btn-green,.modal-footer .btn-accent{flex:1}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px 16px;flex:1;min-width:120px}
+.stat-card .lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.stat-card .val{font-size:22px;font-weight:800;font-family:monospace;letter-spacing:-0.5px}
+.stat-card .sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* PROGRESS */
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.prog-top{display:flex;justify-content:space-between;margin-bottom:8px;font-size:11px}
+.prog-bar-bg{background:var(--border2);border-radius:999px;height:8px;overflow:hidden}
+.prog-bar-fill{background:linear-gradient(90deg,var(--green),#4ade80);height:100%;border-radius:999px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.prog-bottom{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--muted)}
+
+/* TABS */
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab-btn.active{background:var(--alow);border-color:var(--accent);color:var(--accent)}
+.tab-btn:active{opacity:0.7}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:400px}
+th{padding:8px 14px;text-align:left;font-size:9px;color:var(--muted);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border2)}
+td{padding:11px 14px;border-bottom:1px solid #0a0a16}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#ffffff03}
+.tag{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;display:inline-block}
+.tag-in{background:#0d3a26;color:var(--green)}
+.tag-ex{background:#3a0d0d;color:var(--red)}
+.tag-tx{background:#2a1e0a;color:var(--yellow)}
+.fop-badge{font-size:9px;color:var(--yellow);background:#2a1e0a;padding:2px 6px;border-radius:4px;margin-left:5px}
+.pend-badge{font-size:9px;color:var(--yellow);background:#1a1a0a;border:1px solid #3a3a0a;padding:2px 6px;border-radius:4px;margin-left:5px}
+/* На мобільному кнопки завжди видимі */
+.act-btn{background:var(--bg3);border:none;cursor:pointer;padding:4px 7px;font-size:13px;color:#3a3a4a;transition:color .15s;border-radius:5px}
+.act-btn:hover{color:var(--text);background:#ffffff08}
+@media(min-width:700px){.act-btn{color:var(--muted);opacity:0} tr:hover .act-btn{opacity:1;color:var(--muted)}}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px 15px;transition:border-color .15s}
+.kpi-card:hover{border-color:#2a2a3a}
+.kpi-card .lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.kpi-card .usd{font-size:20px;font-weight:800;font-family:monospace;letter-spacing:-0.5px}
+.kpi-card .uah{font-size:10px;color:var(--muted);margin-top:3px}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* CLIENTS */
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.cl-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:17px;cursor:pointer;transition:all .2s}
+.cl-card:hover{border-color:#2e2e42;transform:translateY(-1px);box-shadow:0 4px 20px #00000030}
+.cl-card:active{transform:translateY(0)}
+.cl-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff;margin-bottom:11px}
+.cl-name{font-size:14px;font-weight:700;margin-bottom:3px;letter-spacing:-0.2px}
+.cl-meta{font-size:11px;color:var(--muted);margin-bottom:11px;line-height:1.5}
+.cl-footer{display:flex;justify-content:space-between;align-items:center}
+.badge{padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700}
+.status-row{display:flex;gap:5px;margin-top:10px}
+.status-pill{flex:1;border-radius:7px;padding:5px 4px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid transparent;text-align:center;transition:all .15s}
+
+/* NICHE COLORS */
+.niche-horeca{background:linear-gradient(135deg,#7c3aed,#9f67e4)}
+.niche-mebli{background:linear-gradient(135deg,#0369a1,#38bdf8)}
+.niche-budivnytstvo{background:linear-gradient(135deg,#b45309,#f59e0b)}
+.niche-retail{background:linear-gradient(135deg,#be185d,#f472b6)}
+.niche-vyrobnytstvo{background:linear-gradient(135deg,#065f46,#34d399)}
+.niche-krasa{background:linear-gradient(135deg,#9d174d,#fb7185)}
+.niche-other{background:linear-gradient(135deg,#374151,#9ca3af)}
+
+/* CONTENT */
+.post-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;transition:border-color .15s}
+.post-row:hover{border-color:#2a2a3a}
+.post-type{font-size:11px;font-weight:700;color:var(--accent);background:var(--alow);border:1px solid var(--ahigh);padding:3px 8px;border-radius:6px;margin-right:9px;white-space:nowrap}
+.stt-btn{border:1px solid transparent;border-radius:7px;padding:4px 9px;font-size:10px;font-weight:700;cursor:pointer;background:var(--bg3);color:var(--muted);transition:all .15s;white-space:nowrap}
+.stt-btn:hover{border-color:var(--border)}
+.stt-done{background:#0a2a1a;color:var(--green);border-color:#0d3a22}
+.stt-prog{background:#1e1e0a;color:var(--yellow);border-color:#2a2a10}
+.stt-plan{background:#0a1428;color:var(--blue);border-color:#0d1e3a}
+
+/* PLAN PROGRESS */
+.plan-prog{height:5px;background:var(--border);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.plan-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),#ff9a3c);border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* TARGET */
+.tgt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.tgt-box{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:11px;text-align:center}
+.tgt-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.tgt-val{font-size:16px;font-weight:800;font-family:monospace}
+
+/* REPORTS */
+.rep-hdr{background:linear-gradient(135deg,var(--card) 0%,#1a1020 100%);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:14px;position:relative;overflow:hidden}
+.rep-hdr::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:var(--alow);border-radius:50%;pointer-events:none}
+.rec-box{background:var(--alow);border:1px solid var(--ahigh);border-radius:13px;padding:15px}
+.rec-title{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:9px}
+
+/* TAXES */
+.tax-card{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px}
+.tax-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:7px}
+.tax-note{font-size:10px;color:var(--muted);padding-left:8px;margin-bottom:9px}
+.tax-total{border-top:1px solid var(--border2);padding-top:10px;display:flex;justify-content:space-between;font-weight:700}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center}
+.empty-icon{font-size:36px;margin-bottom:12px;opacity:0.5}
+.empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--muted);line-height:1.5;max-width:220px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;border:1px solid var(--border);border-radius:12px;padding:11px 18px;font-size:13px;font-weight:600;z-index:999;transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 24px #00000060;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* FLOATING ADD BUTTON (mobile) */
+.fab{display:none;position:fixed;bottom:20px;right:18px;width:52px;height:52px;background:linear-gradient(135deg,#FF6B00,#ff8533);border:none;border-radius:50%;font-size:24px;color:#fff;cursor:pointer;box-shadow:0 4px 20px #FF6B0050;z-index:90;align-items:center;justify-content:center;transition:all .2s}
+.fab:active{transform:scale(0.92)}
+@media(max-width:600px){.fab{display:flex}}
+
+@media(max-width:480px){
+  .hdr{padding:0 14px;height:52px}
+  .logo-name{font-size:15px}
+  .nav-btn{padding:12px 12px;font-size:12px}
+  .main{padding:14px 12px 80px}
+  .stats-row{gap:8px}
+  .stat-card{padding:12px}
+  .stat-card .val{font-size:19px}
+  .post-row{flex-wrap:wrap;gap:8px}
+  .post-row>div:last-child{width:100%;justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">
+    <div class="logo-icon">F</div>
+    <span class="logo-name">Frilance OS</span>
+    <span class="logo-badge">BETA</span>
+  </div>
+  <div class="hdr-right">
+    <span class="save-dot" id="saveDot"></span>
+    <div class="hdr-stat">
+      <div class="lbl" id="hdrLbl">Прибуток місяця</div>
+      <div class="val" id="hdrVal">$0</div>
+    </div>
+    <div class="circle" onclick="openGoalModal()" title="Змінити ціль">
+      <div class="pct" id="hdrPct">0%</div>
+      <div class="clbl">цілі</div>
+    </div>
+    <button class="btn-csv" onclick="exportCSV()">⬇ CSV</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="goPage('content',this)">📅 Контент</button>
+  <button class="nav-btn" onclick="goPage('clients',this)">👥 Клієнти</button>
+  <button class="nav-btn" onclick="goPage('finances',this)">₴ Фінанси</button>
+  <button class="nav-btn" onclick="goPage('reports',this)">📊 Звіти</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FAB (mobile) -->
+<button class="fab" id="fab" onclick="fabAction()">+</button>
+
+<!-- PAGES -->
+<div id="pgContent" class="main" style="display:none"></div>
+<div id="pgClients" class="main" style="display:none"></div>
+<div id="pgFinances" class="main" style="display:none"></div>
+<div id="pgReports" class="main" style="display:none"></div>
+
+<!-- ═══ MODALS ═══ -->
+<!-- Entry modal -->
+<div class="overlay" id="mEntry">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mEntryTitle">Новий запис</div>
+    <input type="hidden" id="eId">
+    <div class="field"><label>Тип</label>
+      <select class="inp" id="eType" onchange="refreshCats()">
+        <option value="income">💰 Дохід</option>
+        <option value="expense">💸 Витрата</option>
+        <option value="tax">⚡ Податок</option>
+      </select>
+    </div>
+    <div class="field"><label>Категорія</label><select class="inp" id="eCat"></select></div>
+    <div class="field"><label>Опис</label><input class="inp" id="eDesc" placeholder="Клієнт або опис"></div>
+    <div class="field"><label>Сума</label>
+      <div style="display:flex;gap:6px">
+        <input class="inp" id="eAmt" type="number" placeholder="0">
+        <select class="inp" id="eCur" style="width:70px"><option>UAH</option><option>USD</option></select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="field"><label>ФОП?</label><select class="inp" id="eFop"><option value="no">Ні</option><option value="yes">Так</option></select></div>
+      <div class="field"><label>Місяць</label><input class="inp" id="eMon" type="month"></div>
+    </div>
+    <div class="field"><label>Статус</label>
+      <select class="inp" id="eNote"><option value="">Підтверджено</option><option value="очікується">Очікується</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-green" onclick="saveEntry()">Зберегти</button>
+      <button class="btn-ghost" onclick="closeModal('mEntry')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal modal -->
+<div class="overlay" id="mGoal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎯 Фінансова ціль</div>
+    <div class="field"><label>Сума</label><input class="inp" id="gAmt" type="number" placeholder="5000"></div>
+    <div class="field"><label>Валюта</label>
+      <select class="inp" id="gCur"><option value="USD">USD ($)</option><option value="UAH">UAH (₴)</option></select>
+    </div>
+    <div class="field"><label>Тип</label>
+      <select class="inp" id="gType"><option value="month">На місяць</option><option value="quarter">На квартал</option><option value="year">На рік</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-accent" onclick="saveGoal()">Зберегти</button>
+      <button class="btn-ghost" onclick="closeModal('mGoal')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Client modal -->
+<div class="overlay" id="mClient">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Новий клієнт</div>
+    <div class="field"><label>Назва</label><input class="inp" id="cName" placeholder="Назва бізнесу"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="field"><label>Ніша</label>
+        <select class="inp" id="cNiche">
+          <option>HoReCa</option><option>Меблі</option><option>Будівництво</option>
+          <option>Ритейл</option><option>Виробництво</option><option>Краса</option><option>Інше</option>
+        </select>
+      </div>
+      <div class="field"><label>Статус</label>
+        <select class="inp" id="cStatus"><option value="active">Активний</option><option value="paused">Пауза</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Назва пакету</label><input class="inp" id="cPlan" placeholder="Старт / Максимум"></div>
+    <div class="field"><label>Ціна (₴/міс)</label><input class="inp" id="cPrice" type="number" placeholder="15000"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="field"><label>Контакт</label><input class="inp" id="cContact" placeholder="@instagram"></div>
+      <div class="field"><label>З місяця</label><input class="inp" id="cSince" type="month"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-accent" onclick="saveClient()">Зберегти</button>
+      <button class="btn-ghost" onclick="closeModal('mClient')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Post modal -->
+<div class="overlay" id="mPost">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Новий пост</div>
+    <div class="field"><label>Тип</label>
+      <select class="inp" id="pType"><option>Reels</option><option>Карусель</option><option>Пост</option><option>Stories</option><option>TikTok</option></select>
+    </div>
+    <div class="field"><label>Тема</label><input class="inp" id="pTopic" placeholder="Ідея посту..."></div>
+    <div class="field"><label>Дата</label><input class="inp" id="pDate" type="date"></div>
+    <div class="modal-footer">
+      <button class="btn-accent" onclick="savePost()">Додати</button>
+      <button class="btn-ghost" onclick="closeModal('mPost')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan modal -->
+<div class="overlay" id="mPlan">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Новий контент-план</div>
+    <div class="field"><label>Клієнт</label><select class="inp" id="planCl"></select></div>
+    <div class="field"><label>Місяць (напр. Липень 2026)</label><input class="inp" id="planMon" placeholder="Червень 2026"></div>
+    <div class="modal-footer">
+      <button class="btn-accent" onclick="savePlan()">Створити</button>
+      <button class="btn-ghost" onclick="closeModal('mPlan')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<!-- Target modal -->
+<div class="overlay" id="mTarget">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎯 Результати таргету</div>
+    <div class="field"><label>Місяць</label><input class="inp" id="tMon" type="month"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="field"><label>Бюджет (₴)</label><input class="inp" id="tBudget" type="number" placeholder="5000"></div>
+      <div class="field"><label>Охоплення</label><input class="inp" id="tReach" type="number" placeholder="10000"></div>
+      <div class="field"><label>Кліки</label><input class="inp" id="tClicks" type="number" placeholder="300"></div>
+      <div class="field"><label>Заявки</label><input class="inp" id="tLeads" type="number" placeholder="15"></div>
+    </div>
+    <div class="field"><label>Коментар</label><input class="inp" id="tNote" placeholder="Що спрацювало..."></div>
+    <div class="modal-footer">
+      <button class="btn-accent" onclick="saveTarget()">Зберегти</button>
+      <button class="btn-ghost" onclick="closeModal('mTarget')">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG & HELPERS
+// ══════════════════════════════════════════════════════════════
+var USD = 41.5;
+var MO_UK = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+var CATS = {
+  income: ['Ведення соцмереж','Таргетована реклама','Контент / Reels','SMM стратегія','Аванс','Інше'],
+  expense: ['SMM-спеціаліст 1','SMM-спеціаліст 2','SMM-спеціаліст 3','Таргетолог','Дизайнер','Фотограф','Реклама агентства','Інструменти','Оренда','Інше'],
+  tax: ['ЄП (єдиний податок)','ЄСВ']
+};
+var ST_LABELS = {active:'Активний',paused:'Пауза',churned:'Відписався'};
+var ST_COLORS = {active:'#22C55E',paused:'#F59E0B',churned:'#EF4444'};
+var POST_ST = {done:{l:'Готово',c:'#22C55E',cls:'stt-done'},in_progress:{l:'В роботі',c:'#F59E0B',cls:'stt-prog'},planned:{l:'Заплановано',c:'#3B82F6',cls:'stt-plan'}};
+
+function fmt(n){return new Intl.NumberFormat('uk-UA').format(Math.round(n));}
+function fUSD(n){return '$'+fmt(n/USD);}
+function moLabel(m){var p=m.split('-');return MO_UK[parseInt(p[1])-1]+' '+p[0];}
+function nowMon(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function nowDate(){return new Date().toISOString().slice(0,10);}
+function el(id){return document.getElementById(id);}
+function closeModal(id){el(id).classList.remove('open');}
+function openModal(id){el(id).classList.add('open');}
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+var state = {
+  entries: [],
+  clients: [],
+  plans: [],
+  targets: [],
+  goal: {amount:5000,currency:'USD',type:'month'}
+};
+var activePage = 'content';
+var activeMon = nowMon();
+var activeFinTab = 'table';
+var activeContentClient = null;
+var activeContentTab = 'content';
+var activeReportClient = null;
+var editingEntryId = null;
+var chartInst = null;
+
+// ══════════════════════════════════════════════════════════════
+// INITIAL DATA
+// ══════════════════════════════════════════════════════════════
+var INIT_ENTRIES = [
+  {id:1,type:'income',cat:'Ведення соцмереж',desc:'Bella Interiors',amt:28000,cur:'UAH',mon:'2026-06',fop:true,note:''},
+  {id:2,type:'income',cat:'Таргетована реклама',desc:'Target Pro',amt:12000,cur:'UAH',mon:'2026-06',fop:true,note:''},
+  {id:3,type:'income',cat:'Ведення соцмереж',desc:'Nova Cosmetics',amt:10000,cur:'UAH',mon:'2026-06',fop:true,note:'очікується'},
+  {id:4,type:'income',cat:'Ведення соцмереж',desc:'Grand Hotel',amt:16000,cur:'UAH',mon:'2026-06',fop:false,note:'очікується'},
+  {id:5,type:'income',cat:'Ведення соцмереж',desc:'Sky Restaurant',amt:10000,cur:'UAH',mon:'2026-06',fop:false,note:'очікується'},
+  {id:6,type:'expense',cat:'SMM-спеціаліст 1',desc:'Bella Interiors',amt:9000,cur:'UAH',mon:'2026-06',fop:false,note:''},
+  {id:7,type:'expense',cat:'Фотограф',desc:'Зйомка контенту',amt:6000,cur:'UAH',mon:'2026-06',fop:false,note:''},
+  {id:8,type:'expense',cat:'SMM-спеціаліст 2',desc:'Target Pro',amt:2000,cur:'UAH',mon:'2026-06',fop:false,note:''},
+  {id:9,type:'tax',cat:'ЄП (єдиний податок)',desc:'ЄП червень',amt:3282,cur:'UAH',mon:'2026-06',fop:false,note:'очікується'},
+  // Травень
+  {id:10,type:'income',cat:'Ведення соцмереж',desc:'SolarTech',amt:14000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:11,type:'income',cat:'Ведення соцмереж',desc:'Bloom Wedding',amt:17000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:12,type:'income',cat:'Ведення соцмереж',desc:'Grand Hotel',amt:14000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:13,type:'income',cat:'Ведення соцмереж',desc:'Lumina Spa',amt:13000,cur:'UAH',mon:'2026-05',fop:true,note:''},
+  {id:14,type:'expense',cat:'Фотограф',desc:'Зйомка контенту',amt:1800,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:15,type:'expense',cat:'SMM-спеціаліст 1',desc:'SolarTech',amt:5000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:16,type:'expense',cat:'SMM-спеціаліст 2',desc:'Bloom Wedding',amt:5000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+  {id:17,type:'expense',cat:'SMM-спеціаліст 3',desc:'Lumina Spa',amt:5000,cur:'UAH',mon:'2026-05',fop:false,note:''},
+];
+var INIT_CLIENTS = [
+  {id:1,name:'Sky Restaurant',niche:'HoReCa',plan:'Максимум',price:20000,status:'active',since:'2024-03',contact:'@skyrestaurant'},
+  {id:2,name:'Lumina Spa',niche:'HoReCa',plan:'Старт',price:13000,status:'active',since:'2024-06',contact:'@luminaspa'},
+  {id:3,name:'Bella Interiors',niche:'Меблі',plan:'Максимум',price:28000,status:'active',since:'2025-01',contact:'@bellainteriors'},
+  {id:4,name:'Target Pro',niche:'Ритейл',plan:'Таргет',price:12000,status:'active',since:'2025-03',contact:'@targetpro'},
+  {id:5,name:'Nova Cosmetics',niche:'Краса',plan:'Старт',price:10000,status:'active',since:'2025-06',contact:'@novacosmetics'},
+];
+var INIT_PLANS = [
+  {id:1,clientId:1,month:'Червень 2026',posts:[
+    {id:1,type:'Reels',topic:'Фірмова страва від шефа',date:'2026-06-03',status:'done'},
+    {id:2,type:'Карусель',topic:'Меню літнього сезону',date:'2026-06-07',status:'done'},
+    {id:3,type:'Reels',topic:'Behind the scenes кухні',date:'2026-06-12',status:'in_progress'},
+    {id:4,type:'Пост',topic:'Відгук гостя',date:'2026-06-15',status:'planned'},
+    {id:5,type:'Reels',topic:'Літня тераса',date:'2026-06-20',status:'planned'},
+    {id:6,type:'Карусель',topic:'Знайомство з командою',date:'2026-06-25',status:'planned'},
+  ]},
+  {id:2,clientId:3,month:'Червень 2026',posts:[
+    {id:1,type:'Reels',topic:'Нова колекція 2026',date:'2026-06-04',status:'done'},
+    {id:2,type:'Карусель',topic:'5 ідей для інтер\'єру',date:'2026-06-10',status:'in_progress'},
+    {id:3,type:'Пост',topic:'Відгук клієнта',date:'2026-06-16',status:'planned'},
+    {id:4,type:'Reels',topic:'Процес виробництва',date:'2026-06-22',status:'planned'},
+  ]},
+];
+var INIT_TARGETS = [
+  {id:1,clientId:1,mon:'2026-06',budget:5000,reach:12000,clicks:340,leads:18,note:'Reels дали найкращий результат'},
+  {id:2,clientId:3,mon:'2026-06',budget:8000,reach:28000,clicks:890,leads:42,note:'Карусель конвертує добре'},
+];
+
+// ══════════════════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════════════════
+function load() {
+  // Version check — якщо стара версія, скидаємо дані
+  var ver = localStorage.getItem('fos_ver');
+  if (ver !== '4') {
+    localStorage.removeItem('fos_entries');
+    localStorage.removeItem('fos_clients');
+    localStorage.removeItem('fos_plans');
+    localStorage.removeItem('fos_targets');
+    localStorage.setItem('fos_ver', '4');
+  }
+  try { state.entries = JSON.parse(localStorage.getItem('fos_entries') || 'null') || INIT_ENTRIES.slice(); } catch(e) { state.entries = INIT_ENTRIES.slice(); }
+  try { state.clients = JSON.parse(localStorage.getItem('fos_clients') || 'null') || INIT_CLIENTS.slice(); } catch(e) { state.clients = INIT_CLIENTS.slice(); }
+  try { state.plans = JSON.parse(localStorage.getItem('fos_plans') || 'null') || INIT_PLANS.slice(); } catch(e) { state.plans = INIT_PLANS.slice(); }
+  try { state.targets = JSON.parse(localStorage.getItem('fos_targets') || 'null') || INIT_TARGETS.slice(); } catch(e) { state.targets = INIT_TARGETS.slice(); }
+  try { state.goal = JSON.parse(localStorage.getItem('fos_goal') || 'null') || {amount:5000,currency:'USD',type:'month'}; } catch(e) {}
+  activeContentClient = state.plans[0] ? state.plans[0].clientId : null;
+  activeReportClient = state.clients[0] ? state.clients[0].id : null;
+}
+function save(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); showToast('Збережено ✓'); } catch(e) {}
+}
+function showToast(msg, color) {
+  var t = el('toast');
+  t.textContent = msg;
+  t.style.color = color || '#22C55E';
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2000);
+  // also flash save dot
+  var d = el('saveDot');
+  d.classList.add('show');
+  setTimeout(function() { d.classList.remove('show'); }, 1500);
+}
+function fabAction() {
+  if (activePage === 'finances') openEntryModal();
+  else if (activePage === 'clients') openClientModal();
+  else if (activePage === 'content') openPostModal();
+}
+
+// ══════════════════════════════════════════════════════════════
+// CALCULATIONS
+// ══════════════════════════════════════════════════════════════
+function calcStats(mon) {
+  var me = state.entries.filter(function(e) { return e.mon === mon; });
+  var income = me.filter(function(e) { return e.type === 'income'; }).reduce(function(s,e) { return s + e.amt; }, 0);
+  var expense = me.filter(function(e) { return e.type === 'expense'; }).reduce(function(s,e) { return s + e.amt; }, 0);
+  var tax = me.filter(function(e) { return e.type === 'tax'; }).reduce(function(s,e) { return s + e.amt; }, 0);
+  var profit = income - expense - tax;
+  return { income:income, expense:expense, tax:tax, profit:profit, profitUSD:profit/USD, margin:income>0?(profit/income)*100:0 };
+}
+
+// ══════════════════════════════════════════════════════════════
+// HEADER
+// ══════════════════════════════════════════════════════════════
+function renderHeader() {
+  var s = calcStats(activeMon);
+  var g = state.goal;
+  var goalVal = g.currency === 'USD' ? g.amount : g.amount / USD;
+  var pct = Math.min(100, Math.round((s.profitUSD / goalVal) * 100));
+  var val = g.currency === 'USD' ? '$' + fmt(s.profitUSD) : fmt(s.profit) + ' ₴';
+  el('hdrVal').textContent = val;
+  el('hdrVal').style.color = s.profitUSD >= goalVal ? '#22C55E' : '#b8b4ae';
+  el('hdrPct').textContent = pct + '%';
+  el('hdrPct').style.color = pct >= 100 ? '#22C55E' : pct >= 50 ? '#F59E0B' : '#b8b4ae';
+}
+
+// ══════════════════════════════════════════════════════════════
+// PAGE ROUTER
+// ══════════════════════════════════════════════════════════════
+function goPage(page, btn) {
+  activePage = page;
+  var pages = ['content','clients','finances','reports'];
+  pages.forEach(function(p) {
+    var pg = el('pg' + p.charAt(0).toUpperCase() + p.slice(1));
+    if (pg) pg.style.display = p === page ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderPage(page);
+}
+function renderPage(page) {
+  renderHeader();
+  if (page === 'content') renderContent();
+  else if (page === 'clients') renderClients();
+  else if (page === 'finances') renderFinances();
+  else if (page === 'reports') renderReports();
+}
+function renderAll() { renderPage(activePage); }
+
+// ══════════════════════════════════════════════════════════════
+// FINANCES PAGE
+// ══════════════════════════════════════════════════════════════
+function renderFinances() {
+  var pg = el('pgFinances');
+  var s = calcStats(activeMon);
+  var g = state.goal;
+  var goalVal = g.currency === 'USD' ? g.amount : g.amount / USD;
+  var pct = Math.min(100, Math.round((s.profitUSD / goalVal) * 100));
+  var goalDisplay = (g.currency === 'USD' ? '$' + fmt(g.amount) : fmt(g.amount) + ' ₴') + ' / ' + {month:'місяць',quarter:'квартал',year:'рік'}[g.type];
+
+  // Month tabs
+  var mons = [];
+  state.entries.forEach(function(e) { if (mons.indexOf(e.mon) < 0) mons.push(e.mon); });
+  mons.sort().reverse();
+  if (mons.indexOf(activeMon) < 0) mons.unshift(activeMon);
+  var monTabs = mons.map(function(m) {
+    return '<button class="tab-btn' + (m === activeMon ? ' active' : '') + '" onclick="setMon(\'' + m + '\')">' + moLabel(m) + '</button>';
+  }).join('');
+
+  var html = '';
+
+  // Progress
+  html += '<div class="prog-card">';
+  html += '<div class="prog-top"><div style="font-size:11px;cursor:pointer" onclick="openGoalModal()">ЦІЛЬ: <b style="color:#22C55E">' + goalDisplay + '</b> <span style="color:#333;font-size:10px">✏️</span></div>';
+  html += '<div style="font-size:11px">Місяць: <b>' + (g.currency === 'USD' ? '$' + fmt(s.profitUSD) : fmt(s.profit) + ' ₴') + '</b></div></div>';
+  html += '<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="prog-bottom"><span>Маржа: <b style="color:' + (s.margin >= 50 ? '#22C55E' : s.margin >= 35 ? '#F59E0B' : '#EF4444') + '">' + Math.round(s.margin) + '%</b></span>';
+  html += '<span>Залишилось: <b>' + (g.currency === 'USD' ? '$' + fmt(Math.max(0, goalVal - s.profitUSD)) : fmt(Math.max(0, g.amount - s.profit)) + ' ₴') + '</b></span></div>';
+  html += '</div>';
+
+  // KPIs
+  html += '<div class="kpi-grid">';
+  html += '<div class="kpi-card"><div class="lbl">Доходи</div><div class="usd" style="color:#22C55E">' + fUSD(s.income) + '</div><div class="uah">' + fmt(s.income) + ' грн</div></div>';
+  html += '<div class="kpi-card"><div class="lbl">Витрати</div><div class="usd" style="color:#EF4444">' + fUSD(s.expense) + '</div><div class="uah">' + fmt(s.expense) + ' грн</div></div>';
+  html += '<div class="kpi-card"><div class="lbl">Податки</div><div class="usd" style="color:#F59E0B">' + fUSD(s.tax) + '</div><div class="uah">' + fmt(s.tax) + ' грн</div></div>';
+  html += '<div class="kpi-card"><div class="lbl">Чистий</div><div class="usd" style="color:' + (s.profitUSD >= 0 ? '#22C55E' : '#EF4444') + '">' + fUSD(s.profit) + '</div><div class="uah">' + fmt(s.profit) + ' грн</div></div>';
+  html += '</div>';
+
+  // Month tabs
+  html += '<div class="tab-row">' + monTabs + '</div>';
+
+  // Sub tabs
+  var subs = [{k:'table',l:'📋 Записи'},{k:'analytics',l:'📊 Аналітика'},{k:'debts',l:'📅 План оплат'},{k:'projects',l:'🏢 Проєкти'},{k:'taxes',l:'⚡ Податки'}];
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">';
+  html += '<div class="tab-row" style="margin:0">';
+  subs.forEach(function(s) {
+    html += '<button class="tab-btn' + (activeFinTab === s.k ? ' active' : '') + '" onclick="setFinTab(\'' + s.k + '\')">' + s.l + '</button>';
+  });
+  html += '</div>';
+  html += '<button class="btn-green" onclick="openEntryModal()">+ Додати запис</button>';
+  html += '</div>';
+
+  // Tab content
+  if (activeFinTab === 'table') html += renderTable();
+  else if (activeFinTab === 'analytics') html += renderAnalytics();
+  else if (activeFinTab === 'debts') html += renderDebts();
+  else if (activeFinTab === 'projects') html += renderProjects();
+  else html += renderTaxes();
+
+  pg.innerHTML = html;
+  if (activeFinTab === 'analytics') drawChart();
+}
+
+function renderTable() {
+  var me = state.entries.filter(function(e) { return e.mon === activeMon; }).slice().reverse();
+  if (!me.length) return '<div class="card"><div class="empty-state"><div class="empty-icon">💸</div><div class="empty-title">Немає записів</div><div class="empty-sub">Натисни «+ Додати запис» щоб почати вести облік</div></div></div>';
+  var cards = me.map(function(e) {
+    var tc = e.type === 'income' ? '#22C55E' : e.type === 'expense' ? '#EF4444' : '#F59E0B';
+    var bg = e.type === 'income' ? '#0d3a26' : e.type === 'expense' ? '#3a0d0d' : '#2a1e0a';
+    var lbl = e.type === 'income' ? '↑ Дохід' : e.type === 'expense' ? '↓ Витрата' : '⚡ Податок';
+    var sign = e.type === 'expense' ? '−' : '+';
+    var fop = e.fop ? '<span class="fop-badge">ФОП</span>' : '';
+    var pend = e.note === 'очікується' ? '<span class="pend-badge">очікується</span>' : '';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:13px 15px;margin-bottom:7px">' +
+      '<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">' +
+      '<div style="width:36px;height:36px;border-radius:9px;background:' + bg + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:' + tc + ';flex-shrink:0">' + (e.type==='income'?'↑':e.type==='expense'?'↓':'⚡') + '</div>' +
+      '<div style="min-width:0">' +
+      '<div style="font-size:14px;font-weight:600;color:var(--text-bright);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + e.desc + fop + pend + '</div>' +
+      '<div style="font-size:11px;color:var(--muted)">' + e.cat + '</div>' +
+      '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;flex-shrink:0">' +
+      '<div style="text-align:right">' +
+      '<div style="font-size:15px;font-weight:800;color:' + tc + '">' + sign + fmt(e.amt) + ' ₴</div>' +
+      '<div style="font-size:11px;color:var(--muted)">' + sign + fmt(e.amt/USD) + ' $</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:4px">' +
+      '<button class="act-btn" onclick="editEntry(' + e.id + ')">✏️</button>' +
+      '<button class="act-btn" onclick="delEntry(' + e.id + ')">✕</button>' +
+      '</div></div></div>';
+  }).join('');
+  return '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+    '<div style="font-size:13px;color:var(--muted)">' + moLabel(activeMon) + ' · <b style="color:var(--text)">' + me.length + ' записів</b></div></div>' +
+    cards;
+}
+
+function renderAnalytics() {
+  var s = calcStats(activeMon);
+  var expMap = {};
+  state.entries.filter(function(e) { return e.mon === activeMon && e.type === 'expense'; }).forEach(function(e) {
+    expMap[e.cat] = (expMap[e.cat] || 0) + e.amt;
+  });
+  var expSorted = Object.keys(expMap).sort(function(a,b) { return expMap[b] - expMap[a]; });
+  var expRows = expSorted.map(function(cat) {
+    var pct = s.expense > 0 ? Math.round((expMap[cat] / s.expense) * 100) : 0;
+    return '<div style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px"><span>' + cat + '</span><span style="color:var(--muted)">' + fmt(expMap[cat]) + ' грн</span></div>' +
+      '<div style="background:var(--border2);border-radius:999px;height:4px;overflow:hidden"><div style="height:100%;background:var(--accent);border-radius:999px;width:' + pct + '%"></div></div>' +
+      '</div>';
+  }).join('');
+
+  var insights = [];
+  if (s.margin >= 50) insights.push({i:'✅', t:'Маржа ' + Math.round(s.margin) + '% — відмінно!'});
+  else if (s.margin >= 35) insights.push({i:'⚠️', t:'Маржа ' + Math.round(s.margin) + '% — є куди рости'});
+  else if (s.income > 0) insights.push({i:'🔴', t:'Маржа ' + Math.round(s.margin) + '% — нижче норми'});
+  var g = state.goal;
+  var goalVal = g.currency === 'USD' ? g.amount : g.amount / USD;
+  if (s.profitUSD < goalVal && s.income > 0) insights.push({i:'🎯', t:'До цілі бракує $' + fmt(Math.max(0, goalVal - s.profitUSD))});
+  if (s.profitUSD >= goalVal) insights.push({i:'🏆', t:'Ціль досягнута! 🚀'});
+  var insHtml = insights.map(function(i) {
+    return '<div style="display:flex;align-items:flex-start;gap:8px;background:var(--bg3);border-radius:9px;padding:10px;margin-bottom:7px">' +
+      '<span style="font-size:16px">' + i.i + '</span><span style="font-size:13px;color:#6a6a7e">' + i.t + '</span></div>';
+  }).join('');
+
+  // Monthly chart data
+  var mons = [];
+  state.entries.forEach(function(e) { if (mons.indexOf(e.mon) < 0) mons.push(e.mon); });
+  mons.sort();
+  var chartLabels = mons.map(function(m) { return MO_UK[parseInt(m.split('-')[1])-1]; }).join(',');
+  var chartInc = mons.map(function(m) { return Math.round(calcStats(m).income/USD); }).join(',');
+  var chartProf = mons.map(function(m) { return Math.round(calcStats(m).profitUSD); }).join(',');
+
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
+    '<div class="card card-pad">' +
+      '<div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">💡 Аналітика</div>' +
+      insHtml + expRows +
+    '</div>' +
+    '<div class="card card-pad">' +
+      '<div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">📈 Динаміка</div>' +
+      '<canvas id="finChart" style="max-height:200px"></canvas>' +
+      '<div style="display:none" id="chartData" data-labels="' + chartLabels + '" data-inc="' + chartInc + '" data-prof="' + chartProf + '"></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function drawChart() {
+  var cd = el('chartData');
+  if (!cd) return;
+  var canvas = el('finChart');
+  if (!canvas) return;
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+  chartInst = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: cd.dataset.labels.split(','),
+      datasets: [
+        {label:'Доходи $', data: cd.dataset.inc.split(',').map(Number), borderColor:'#22C55E', backgroundColor:'#22C55E22', tension:.4, fill:true, pointBackgroundColor:'#22C55E'},
+        {label:'Прибуток $', data: cd.dataset.prof.split(',').map(Number), borderColor:'#3B82F6', tension:.4, pointBackgroundColor:'#3B82F6'}
+      ]
+    },
+    options: {responsive:true, maintainAspectRatio:true, plugins:{legend:{labels:{color:'#666',font:{size:10}}}}, scales:{x:{ticks:{color:'#444'},grid:{color:'#111'}},y:{ticks:{color:'#444',callback:function(v){return '$'+v;}},grid:{color:'#111'}}}}
+  });
+}
+
+function renderDebts() {
+  var debts = state.entries.filter(function(e) { return e.mon === activeMon && e.note === 'очікується'; });
+  var total = debts.reduce(function(s,e) { return s + e.amt; }, 0);
+  var rows = debts.map(function(e) {
+    var tc = e.type === 'income' ? '#22C55E' : e.type === 'expense' ? '#EF4444' : '#F59E0B';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg3);border:1px solid #1a2a1a;border-radius:10px;padding:12px 14px;margin-bottom:7px">' +
+      '<div><div style="font-size:14px;font-weight:600;margin-bottom:2px">' + e.desc + (e.fop ? '<span class="fop-badge">ФОП</span>' : '') + '</div>' +
+      '<div style="font-size:11px;color:var(--muted)">' + e.cat + '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      '<div style="text-align:right"><div style="font-size:15px;font-weight:700;color:#F59E0B">' + fmt(e.amt) + ' грн</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px">' +
+      '<button onclick="markPaid(' + e.id + ')" style="background:#0d3a26;color:#22C55E;border:1px solid #1e4a2e;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer">✔ Оплачено</button>' +
+      '<button onclick="delEntry(' + e.id + ')" style="background:#2a0d0d;color:#EF4444;border:1px solid #4a1e1e;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer">✕ Видалити</button>' +
+      '</div></div></div>';
+  }).join('');
+
+  return '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">' +
+    '<div style="font-size:13px;color:var(--muted)">Очікується: <b style="color:#F59E0B">' + fmt(total) + ' грн</b></div>' +
+    '<button class="btn-accent" onclick="openEntryModal()">+ Додати</button></div>' +
+    '<div class="card card-pad">' + (rows || '<div style="color:var(--muted);text-align:center;padding:32px">Немає очікуваних оплат 🎉</div>') + '</div>';
+}
+
+function renderProjects() {
+  var me = state.entries.filter(function(e) { return e.mon === activeMon; });
+  var proj = {};
+  me.forEach(function(e) {
+    var k = e.desc.split('(')[0].trim();
+    if (!proj[k]) proj[k] = {name:k, income:0, expense:0};
+    if (e.type === 'income') proj[k].income += e.amt;
+    else if (e.type === 'expense') proj[k].expense += e.amt;
+  });
+  var list = Object.values(proj).filter(function(p) { return p.income > 0; }).map(function(p) {
+    return Object.assign(p, {profit: p.income - p.expense, margin: Math.round(((p.income - p.expense) / p.income) * 100)});
+  }).sort(function(a,b) { return b.profit - a.profit; });
+
+  if (!list.length) return '<div class="card"><div class="empty-state"><div class="empty-icon">🏢</div><div class="empty-title">Немає проєктів</div><div class="empty-sub">Додай доходи з описом клієнта щоб побачити аналітику</div></div></div>';
+  var header = '<div style="font-size:13px;color:var(--muted);margin-bottom:12px">Прибутковість по клієнтах · <b style="color:var(--text)">' + moLabel(activeMon) + '</b></div>';
+  var cards = list.map(function(p) {
+    var mc = p.margin >= 50 ? '#22C55E' : p.margin >= 30 ? '#F59E0B' : '#EF4444';
+    var mbg = p.margin >= 50 ? '#0d3a26' : p.margin >= 30 ? '#2a1e0a' : '#3a0d0d';
+    return '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:8px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+      '<div style="font-size:14px;font-weight:700;color:var(--text-bright)">' + p.name + '</div>' +
+      '<div style="background:' + mbg + ';color:' + mc + ';font-size:12px;font-weight:800;padding:3px 10px;border-radius:7px">' + p.margin + '%</div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">' +
+      '<div style="background:var(--card);border-radius:8px;padding:9px 10px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Дохід</div><div style="font-size:14px;font-weight:700;color:#22C55E">+' + fmt(p.income) + ' ₴</div></div>' +
+      '<div style="background:var(--card);border-radius:8px;padding:9px 10px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Витрати</div><div style="font-size:14px;font-weight:700;color:#EF4444">−' + fmt(p.expense) + ' ₴</div></div>' +
+      '<div style="background:var(--card);border-radius:8px;padding:9px 10px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Прибуток</div><div style="font-size:14px;font-weight:700;color:' + (p.profit>=0?'#22C55E':'#EF4444') + '">' + (p.profit>=0?'+':'') + fmt(p.profit) + ' ₴</div></div>' +
+      '</div>' +
+      '<div style="background:var(--border2);border-radius:999px;height:5px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,' + mc + ','+mc+'99);border-radius:999px;width:' + Math.max(0,p.margin) + '%"></div></div>' +
+      '</div>';
+  }).join('');
+  return header + cards;
+}
+
+function renderTaxes() {
+  var mons = [];
+  state.entries.forEach(function(e) { if (mons.indexOf(e.mon) < 0) mons.push(e.mon); });
+  mons.sort().reverse();
+  if (!mons.length) return '<div class="card card-pad" style="color:var(--muted);text-align:center;padding:40px">Немає даних</div>';
+  var ESV = 1902.34;
+  var html = '<div style="font-size:12px;color:var(--muted);margin-bottom:14px">Авто-розрахунок на основі доходів з міткою <b style="color:var(--accent)">ФОП</b></div>';
+  mons.forEach(function(m) {
+    var fopInc = state.entries.filter(function(e) { return e.mon === m && e.type === 'income' && e.fop; }).reduce(function(s,e) { return s+e.amt; }, 0);
+    var allInc = state.entries.filter(function(e) { return e.mon === m && e.type === 'income'; }).reduce(function(s,e) { return s+e.amt; }, 0);
+    var ep = Math.round(fopInc * 0.05);
+    var total = ep + ESV;
+    var paid = state.entries.filter(function(e) { return e.mon === m && e.type === 'tax'; }).reduce(function(s,e) { return s+e.amt; }, 0);
+    var diff = total - paid;
+    var sc = diff <= 0 ? '#22C55E' : '#F59E0B';
+    var st = diff <= 0 ? '✓ Сплачено' : '⏳ До сплати';
+    html += '<div class="card" style="padding:14px 16px;margin-bottom:12px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:15px;font-weight:700">' + moLabel(m) + '</div>';
+    html += '<span style="font-size:11px;font-weight:700;color:' + sc + ';background:' + sc + '20;padding:3px 10px;border-radius:6px">' + st + '</span></div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+    html += '<div class="tax-card"><div class="stat-card lbl">Дохід ФОП</div><div style="font-size:17px;font-weight:700;color:#22C55E">' + fmt(fopInc) + ' грн</div><div style="font-size:11px;color:var(--muted)">Загальний: ' + fmt(allInc) + ' грн</div></div>';
+    html += '<div class="tax-card"><div class="stat-card lbl">Сплачено</div><div style="font-size:17px;font-weight:700;color:#3B82F6">' + fmt(paid) + ' грн</div><div style="font-size:11px;color:var(--muted)">' + (diff > 0 ? 'Залишилось: ' + fmt(diff) + ' грн' : 'Повністю ✓') + '</div></div>';
+    html += '</div>';
+    html += '<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px">';
+    html += '<div class="tax-row"><span style="color:var(--muted)">ЄП 5% від ФОП-доходу</span><span style="font-weight:600;color:#F59E0B">' + fmt(ep) + ' грн</span></div>';
+    html += '<div class="tax-note">→ сплатити до 19-го числа наступного місяця</div>';
+    html += '<div class="tax-row"><span style="color:var(--muted)">ЄСВ (фіксований)</span><span style="font-weight:600;color:#F59E0B">' + fmt(ESV) + ' грн</span></div>';
+    html += '<div class="tax-note">→ сплатити до 20-го числа поточного місяця</div>';
+    html += '<div class="tax-total"><span>РАЗОМ ДО СПЛАТИ</span><span style="color:' + (diff <= 0 ? '#22C55E' : '#EF4444') + ';font-size:15px">' + fmt(total) + ' грн</span></div>';
+    html += '</div></div>';
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// CLIENTS PAGE
+// ══════════════════════════════════════════════════════════════
+function renderClients() {
+  var pg = el('pgClients');
+  var active = state.clients.filter(function(c) { return c.status === 'active'; });
+  var mrr = active.reduce(function(s,c) { return s + c.price; }, 0);
+
+  var NICHE_CLS = {'HoReCa':'niche-horeca','Меблі':'niche-mebli','Будівництво':'niche-budivnytstvo','Ритейл':'niche-retail','Виробництво':'niche-vyrobnytstvo','Краса':'niche-krasa'};
+
+  var html = '<div class="stats-row">';
+  html += '<div class="stat-card"><div class="lbl">Активних</div><div class="val" style="color:#22C55E">' + active.length + '</div><div class="sub">клієнтів</div></div>';
+  html += '<div class="stat-card"><div class="lbl">MRR</div><div class="val" style="color:var(--accent)">' + fmt(mrr) + ' ₴</div><div class="sub">щомісяця</div></div>';
+  html += '<div class="stat-card"><div class="lbl">Всього</div><div class="val">' + state.clients.length + '</div><div class="sub">у базі</div></div>';
+  html += '</div>';
+  html += '<div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-accent" onclick="openClientModal()">+ Новий клієнт</button></div>';
+
+  if (!state.clients.length) {
+    html += '<div class="card"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">Немає клієнтів</div><div class="empty-sub">Додай першого клієнта щоб почати роботу</div></div></div>';
+    pg.innerHTML = html;
+    return;
+  }
+
+  html += '<div class="client-grid">';
+  state.clients.forEach(function(c) {
+    var sc = ST_COLORS[c.status] || '#666';
+    var nicheCls = NICHE_CLS[c.niche] || 'niche-other';
+    html += '<div class="cl-card" onclick="viewClient(' + c.id + ')">';
+    html += '<div class="cl-av ' + nicheCls + '">' + c.name[0] + '</div>';
+    html += '<div class="cl-name">' + c.name + '</div>';
+    html += '<div class="cl-meta">' + c.niche + ' · ' + c.contact + '<br>з ' + c.since + ' · ' + c.plan + '</div>';
+    html += '<div class="cl-footer"><span style="font-weight:800;color:#22C55E;font-size:15px">' + fmt(c.price) + ' ₴<span style="font-size:10px;font-weight:500;color:var(--muted)">/міс</span></span>';
+    html += '<span class="badge" style="background:' + sc + '20;color:' + sc + '">' + (ST_LABELS[c.status]||c.status) + '</span></div>';
+    html += '<div class="status-row">';
+    ['active','paused','churned'].forEach(function(s) {
+      html += '<button class="status-pill" style="border-color:' + (c.status===s?ST_COLORS[s]:'var(--border)') + ';background:' + (c.status===s?ST_COLORS[s]+'22':'transparent') + ';color:' + (c.status===s?ST_COLORS[s]:'var(--muted)') + '" onclick="event.stopPropagation();setClientStatus(' + c.id + ',\'' + s + '\')">' + ST_LABELS[s] + '</button>';
+    });
+    html += '</div></div>';
+  });
+  html += '</div>';
+  pg.innerHTML = html;
+}
+
+function viewClient(id) {
+  activeContentClient = id;
+  activeContentTab = 'content';
+  goPage('content', document.querySelector('.nav-btn'));
+}
+
+// ══════════════════════════════════════════════════════════════
+// CONTENT PAGE
+// ══════════════════════════════════════════════════════════════
+function renderContent() {
+  var pg = el('pgContent');
+  var html = '<div class="tab-row">';
+  state.plans.forEach(function(p) {
+    var c = state.clients.find(function(cl) { return cl.id === p.clientId; });
+    html += '<button class="tab-btn' + (p.clientId === activeContentClient ? ' active' : '') + '" onclick="setContentClient(' + p.clientId + ')">' + (c ? c.name : 'Клієнт') + '</button>';
+  });
+  html += '<button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="openPlanModal()">+ Новий план</button>';
+  html += '</div>';
+
+  var plan = state.plans.find(function(p) { return p.clientId === activeContentClient; });
+  if (!plan) {
+    html += '<div class="card"><div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">Оберіть клієнта</div><div class="empty-sub">Або додай новий контент-план через кнопку вище</div></div></div>';
+    pg.innerHTML = html;
+    return;
+  }
+
+  var clientName = '';
+  var c = state.clients.find(function(cl) { return cl.id === activeContentClient; });
+  if (c) clientName = c.name;
+
+  var done = plan.posts.filter(function(p) { return p.status === 'done'; }).length;
+  var total = plan.posts.length;
+
+  // Sub tabs
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  html += '<div><div style="font-size:17px;font-weight:700">' + clientName + '</div><div style="font-size:12px;color:var(--muted)">' + plan.month + '</div></div>';
+  html += '<div style="display:flex;gap:6px">';
+  html += '<button class="tab-btn' + (activeContentTab === 'content' ? ' active' : '') + '" onclick="setContentTab(\'content\')">📅 Контент</button>';
+  html += '<button class="tab-btn' + (activeContentTab === 'target' ? ' active' : '') + '" onclick="setContentTab(\'target\')">🎯 Таргет</button>';
+  html += '</div></div>';
+
+  if (activeContentTab === 'target') {
+    html += renderTargetBlock(activeContentClient);
+  } else {
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    html += '<div style="font-size:13px;color:var(--muted)">' + total + ' постів · ' + done + ' готово</div>';
+    html += '<button class="btn-accent" style="padding:7px 13px;font-size:12px" onclick="openPostModal()">+ Пост</button>';
+    html += '</div>';
+    html += '<div class="plan-prog"><div class="plan-prog-fill" style="width:' + (total ? Math.round(done/total*100) : 0) + '%"></div></div>';
+    if (!plan.posts.length) {
+      html += '<div class="card"><div class="empty-state"><div class="empty-icon">✍️</div><div class="empty-title">Немає постів</div><div class="empty-sub">Натисни «+ Пост» щоб додати перший</div></div></div>';
+    } else {
+      plan.posts.forEach(function(post) {
+        var statusBtns = Object.keys(POST_ST).map(function(s) {
+          var st = POST_ST[s];
+          var cls = post.status === s ? st.cls : '';
+          return '<button class="stt-btn ' + cls + '" onclick="setPostStatus(' + plan.id + ',' + post.id + ',\'' + s + '\')">' + st.l + '</button>';
+        }).join('');
+        html += '<div class="post-row">';
+        html += '<div style="display:flex;align-items:center;flex:1"><span class="post-type">' + post.type + '</span><span style="font-size:13px">' + post.topic + '</span></div>';
+        html += '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--muted)">' + post.date.slice(5) + '</span>';
+        html += '<div style="display:flex;gap:3px">' + statusBtns + '</div>';
+        html += '<button onclick="delPost(' + plan.id + ',' + post.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;font-size:12px">✕</button>';
+        html += '</div></div>';
+      });
+    }
+  }
+  pg.innerHTML = html;
+}
+
+function renderTargetBlock(clientId) {
+  var records = state.targets.filter(function(t) { return t.clientId === clientId; });
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  html += '<div style="font-size:13px;color:var(--muted)">' + records.length + ' записів по рекламі</div>';
+  html += '<button class="btn-accent" style="padding:7px 13px;font-size:12px" onclick="openTargetModal()">+ Результати</button></div>';
+  if (!records.length) {
+    html += '<div class="card"><div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-title">Немає даних по таргету</div><div class="empty-sub">Натисни «+ Результати» щоб додати перший запис</div></div></div>';
+    return html;
+  }
+  records.forEach(function(t) {
+    var cpl = t.leads > 0 ? Math.round(t.budget / t.leads) : 0;
+    var ctr = t.reach > 0 ? ((t.clicks / t.reach) * 100).toFixed(2) : 0;
+    var cplC = cpl < 300 ? '#22C55E' : cpl < 600 ? '#F59E0B' : '#EF4444';
+    html += '<div class="card" style="padding:14px 16px;margin-bottom:10px">';
+    html += '<div style="display:flex;justify-content:space-between;margin-bottom:12px"><div style="font-weight:700">' + t.mon + '</div>';
+    html += '<button onclick="delTarget(' + t.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px">✕</button></div>';
+    html += '<div class="tgt-grid">';
+    [['Бюджет', fmt(t.budget)+' ₴','#F59E0B'],['Охоплення',fmt(t.reach),'#3B82F6'],['Кліки',fmt(t.clicks),'#3B82F6'],['Заявки',t.leads,'#22C55E'],['Ціна заявки',fmt(cpl)+' ₴',cplC],['CTR',ctr+'%','#3B82F6']].forEach(function(r) {
+      html += '<div class="tgt-box"><div class="tgt-lbl">' + r[0] + '</div><div class="tgt-val" style="color:' + r[2] + '">' + r[1] + '</div></div>';
+    });
+    html += '</div>';
+    if (t.note) html += '<div style="background:var(--bg3);border-radius:8px;padding:9px;font-size:12px;color:#5a5a6e;margin-top:8px">💬 ' + t.note + '</div>';
+    html += '</div>';
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// REPORTS PAGE
+// ══════════════════════════════════════════════════════════════
+function renderReports() {
+  var pg = el('pgReports');
+  var html = '<div class="tab-row">';
+  state.clients.forEach(function(c) {
+    html += '<button class="tab-btn' + (c.id === activeReportClient ? ' active' : '') + '" onclick="setReportClient(' + c.id + ')">' + c.name + '</button>';
+  });
+  html += '</div>';
+
+  var client = state.clients.find(function(c) { return c.id === activeReportClient; });
+  if (!client) { pg.innerHTML = html; return; }
+  var plan = state.plans.find(function(p) { return p.clientId === activeReportClient; });
+  var done = plan ? plan.posts.filter(function(p) { return p.status === 'done'; }).length : 0;
+  var total = plan ? plan.posts.length : 0;
+  var reels = plan ? plan.posts.filter(function(p) { return p.type === 'Reels' && p.status === 'done'; }).length : 0;
+
+  html += '<div class="rep-hdr">';
+  html += '<div style="font-size:11px;color:var(--muted);margin-bottom:3px">Щомісячний звіт</div>';
+  html += '<div style="font-size:19px;font-weight:700;margin-bottom:2px">' + client.name + '</div>';
+  html += '<div style="font-size:12px;color:var(--muted)">' + (plan ? plan.month : moLabel(activeMon)) + ' · ' + client.plan + '</div>';
+  html += '</div>';
+
+  html += '<div class="stats-row">';
+  html += '<div class="stat-card"><div class="lbl">Публікацій</div><div class="val" style="color:#22C55E">' + done + '/' + total + '</div></div>';
+  html += '<div class="stat-card"><div class="lbl">Reels</div><div class="val" style="color:var(--accent)">' + reels + '</div></div>';
+  html += '<div class="stat-card"><div class="lbl">Інвестиція</div><div class="val" style="color:#3B82F6">' + fmt(client.price) + ' ₴</div></div>';
+  html += '</div>';
+
+  html += '<div class="card card-pad" style="margin-bottom:14px"><div style="font-weight:600;margin-bottom:10px">Виконані публікації</div>';
+  if (plan && plan.posts.filter(function(p){return p.status==='done';}).length) {
+    plan.posts.filter(function(p){return p.status==='done';}).forEach(function(post) {
+      html += '<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border2);align-items:center;font-size:13px">';
+      html += '<span style="background:var(--alow);color:var(--accent);border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700">' + post.type + '</span>';
+      html += '<span>' + post.topic + '</span>';
+      html += '<span style="font-size:11px;color:var(--muted);margin-left:auto">' + post.date.slice(5) + '</span></div>';
+    });
+  } else {
+    html += '<div style="color:var(--muted);font-size:13px">Ще немає виконаних публікацій</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="rec-box"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+  html += '<div class="rec-title">✨ AI-рекомендації</div>';
+  html += '<button onclick="genAI(' + client.id + ')" id="aiBtn' + client.id + '" class="btn-accent" style="padding:5px 12px;font-size:11px">🤖 Згенерувати</button>';
+  html += '</div><div id="aiTxt' + client.id + '" style="font-size:13px;color:#484858;font-style:italic">Натисни кнопку щоб отримати персональні рекомендації</div></div>';
+
+  pg.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════════════════════════════
+function setMon(m) { activeMon = m; renderFinances(); }
+function setFinTab(t) { activeFinTab = t; renderFinances(); }
+function setContentClient(id) { activeContentClient = id; activeContentTab = 'content'; renderContent(); }
+function setContentTab(t) { activeContentTab = t; renderContent(); }
+function setReportClient(id) { activeReportClient = id; renderReports(); }
+function setClientStatus(id, status) {
+  state.clients = state.clients.map(function(c) { return c.id === id ? Object.assign({},c,{status:status}) : c; });
+  save('fos_clients', state.clients);
+  renderClients();
+}
+function markPaid(id) {
+  state.entries = state.entries.map(function(e) { return e.id === id ? Object.assign({},e,{note:''}) : e; });
+  save('fos_entries', state.entries);
+  showToast('Оплачено ✓');
+  renderAll();
+}
+function delEntry(id) {
+  if (!confirm('Видалити запис?')) return;
+  state.entries = state.entries.filter(function(e) { return e.id !== id; });
+  save('fos_entries', state.entries);
+  showToast('Запис видалено', '#EF4444');
+  renderAll();
+}
+function delPost(planId, postId) {
+  state.plans = state.plans.map(function(p) {
+    return p.id === planId ? Object.assign({},p,{posts: p.posts.filter(function(post) { return post.id !== postId; })}) : p;
+  });
+  save('fos_plans', state.plans);
+  renderContent();
+}
+function setPostStatus(planId, postId, status) {
+  state.plans = state.plans.map(function(p) {
+    return p.id === planId ? Object.assign({},p,{posts: p.posts.map(function(post) { return post.id === postId ? Object.assign({},post,{status:status}) : post; })}) : p;
+  });
+  save('fos_plans', state.plans);
+  renderContent();
+}
+function delTarget(id) {
+  if (!confirm('Видалити запис таргету?')) return;
+  state.targets = state.targets.filter(function(t) { return t.id !== id; });
+  save('fos_targets', state.targets);
+  showToast('Видалено', '#EF4444');
+  renderContent();
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════════════
+function refreshCats() {
+  var type = el('eType').value;
+  var cats = CATS[type] || CATS.tax;
+  el('eCat').innerHTML = cats.map(function(c) { return '<option>' + c + '</option>'; }).join('');
+}
+
+function openEntryModal() {
+  editingEntryId = null;
+  el('mEntryTitle').textContent = 'Новий запис';
+  el('eId').value = '';
+  el('eType').value = 'income';
+  refreshCats();
+  el('eDesc').value = '';
+  el('eAmt').value = '';
+  el('eCur').value = 'UAH';
+  el('eFop').value = 'no';
+  el('eMon').value = activeMon;
+  el('eNote').value = '';
+  openModal('mEntry');
+}
+
+function editEntry(id) {
+  var e = state.entries.find(function(x) { return x.id === id; });
+  if (!e) return;
+  editingEntryId = id;
+  el('mEntryTitle').textContent = 'Редагувати запис';
+  el('eId').value = id;
+  el('eType').value = e.type;
+  refreshCats();
+  el('eCat').value = e.cat;
+  el('eDesc').value = e.desc;
+  el('eAmt').value = e.amt;
+  el('eCur').value = e.cur || 'UAH';
+  el('eFop').value = e.fop ? 'yes' : 'no';
+  el('eMon').value = e.mon;
+  el('eNote').value = e.note || '';
+  openModal('mEntry');
+}
+
+function saveEntry() {
+  var amt = parseFloat(el('eAmt').value);
+  if (!amt || isNaN(amt)) return;
+  var cur = el('eCur').value;
+  var amtUAH = cur === 'USD' ? amt * USD : amt;
+  var entry = {
+    id: editingEntryId || Date.now(),
+    type: el('eType').value,
+    cat: el('eCat').value,
+    desc: el('eDesc').value,
+    amt: amtUAH,
+    cur: cur,
+    mon: el('eMon').value,
+    fop: el('eFop').value === 'yes',
+    note: el('eNote').value
+  };
+  if (editingEntryId) {
+    state.entries = state.entries.map(function(e) { return e.id === editingEntryId ? entry : e; });
+  } else {
+    state.entries.push(entry);
+  }
+  save('fos_entries', state.entries);
+  closeModal('mEntry');
+  renderAll();
+}
+
+function openGoalModal() {
+  var g = state.goal;
+  el('gAmt').value = g.amount;
+  el('gCur').value = g.currency;
+  el('gType').value = g.type;
+  openModal('mGoal');
+}
+
+function saveGoal() {
+  state.goal = { amount: parseFloat(el('gAmt').value) || 5000, currency: el('gCur').value, type: el('gType').value };
+  save('fos_goal', state.goal);
+  closeModal('mGoal');
+  renderAll();
+}
+
+function openClientModal() {
+  el('cName').value = '';
+  el('cPlan').value = 'Старт';
+  el('cPrice').value = 15000;
+  el('cContact').value = '';
+  el('cSince').value = nowMon();
+  el('cStatus').value = 'active';
+  openModal('mClient');
+}
+
+function saveClient() {
+  var name = el('cName').value.trim();
+  if (!name) return;
+  state.clients.push({
+    id: Date.now(), name: name, niche: el('cNiche').value,
+    plan: el('cPlan').value, price: parseInt(el('cPrice').value) || 15000,
+    status: el('cStatus').value, since: el('cSince').value, contact: el('cContact').value || '—'
+  });
+  save('fos_clients', state.clients);
+  closeModal('mClient');
+  renderClients();
+}
+
+function openPostModal() {
+  el('pTopic').value = '';
+  el('pDate').value = nowDate();
+  openModal('mPost');
+}
+
+function savePost() {
+  var topic = el('pTopic').value.trim();
+  if (!topic) return;
+  var plan = state.plans.find(function(p) { return p.clientId === activeContentClient; });
+  if (!plan) return;
+  plan.posts.push({ id: Date.now(), type: el('pType').value, topic: topic, date: el('pDate').value, status: 'planned' });
+  save('fos_plans', state.plans);
+  closeModal('mPost');
+  renderContent();
+}
+
+function openPlanModal() {
+  el('planCl').innerHTML = state.clients.map(function(c) { return '<option value="' + c.id + '">' + c.name + '</option>'; }).join('');
+  var now = new Date();
+  el('planMon').value = MO_UK[now.getMonth()] + ' ' + now.getFullYear();
+  openModal('mPlan');
+}
+
+function savePlan() {
+  var clientId = parseInt(el('planCl').value);
+  var month = el('planMon').value.trim();
+  if (!month) return;
+  if (state.plans.find(function(p) { return p.clientId === clientId; })) {
+    alert('Для цього клієнта вже є контент-план');
+    closeModal('mPlan');
+    return;
+  }
+  state.plans.push({ id: Date.now(), clientId: clientId, month: month, posts: [] });
+  activeContentClient = clientId;
+  save('fos_plans', state.plans);
+  closeModal('mPlan');
+  renderContent();
+}
+
+function openTargetModal() {
+  el('tMon').value = nowMon();
+  el('tBudget').value = '';
+  el('tReach').value = '';
+  el('tClicks').value = '';
+  el('tLeads').value = '';
+  el('tNote').value = '';
+  openModal('mTarget');
+}
+
+function saveTarget() {
+  var budget = parseFloat(el('tBudget').value) || 0;
+  if (!budget) return;
+  state.targets.push({
+    id: Date.now(), clientId: activeContentClient,
+    mon: el('tMon').value, budget: budget,
+    reach: parseInt(el('tReach').value) || 0,
+    clicks: parseInt(el('tClicks').value) || 0,
+    leads: parseInt(el('tLeads').value) || 0,
+    note: el('tNote').value
+  });
+  save('fos_targets', state.targets);
+  closeModal('mTarget');
+  renderContent();
+}
+
+// ══════════════════════════════════════════════════════════════
+// AI REPORTS
+// ══════════════════════════════════════════════════════════════
+function genAI(clientId) {
+  var client = state.clients.find(function(c) { return c.id === clientId; });
+  var plan = state.plans.find(function(p) { return p.clientId === clientId; });
+  var btn = el('aiBtn' + clientId);
+  var txt = el('aiTxt' + clientId);
+  if (!client || !btn || !txt) return;
+
+  btn.textContent = '⏳ Генерую...';
+  btn.disabled = true;
+  txt.style.color = '#555';
+  txt.textContent = 'Аналізую дані клієнта...';
+
+  var done = plan ? plan.posts.filter(function(p){return p.status==='done';}).length : 0;
+  var total = plan ? plan.posts.length : 0;
+  var reels = plan ? plan.posts.filter(function(p){return p.type==='Reels';}).length : 0;
+  var stories = plan ? plan.posts.filter(function(p){return p.type==='Stories';}).length : 0;
+  var s = calcStats(activeMon);
+
+  var prompt = 'Ти — експерт з SMM. Дай 3-4 конкретні рекомендації українською мовою для клієнта на наступний місяць. Кожна з нового рядка. Без заголовків.\n\n' +
+    'Клієнт: ' + client.name + '\nНіша: ' + client.niche + '\nПакет: ' + client.plan + ' (' + fmt(client.price) + ' грн/міс)\n' +
+    'Постів: ' + done + '/' + total + '\nReels: ' + reels + '\nStories: ' + stories + '\n' +
+    'Дохід агентства від клієнта: ' + fmt(s.income) + ' грн';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:600, messages:[{role:'user',content:prompt}]})
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    var text = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text : 'Не вдалось отримати відповідь';
+    txt.style.color = '#aaa';
+    txt.style.fontStyle = 'normal';
+    txt.innerHTML = text.split('\n').filter(function(l){return l.trim();}).map(function(l){
+      return '<div style="margin-bottom:6px">' + l + '</div>';
+    }).join('');
+    btn.textContent = '↺ Оновити';
+    btn.disabled = false;
+  }).catch(function() {
+    txt.style.color = '#EF4444';
+    txt.textContent = 'Помилка. Спробуй ще раз.';
+    btn.textContent = '🤖 Згенерувати';
+    btn.disabled = false;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// CSV EXPORT
+// ══════════════════════════════════════════════════════════════
+function exportCSV() {
+  var rows = ['Тип,Категорія,Опис,Сума грн,Місяць,ФОП,Статус'];
+  state.entries.forEach(function(e) {
+    rows.push([e.type, e.cat, '"' + e.desc + '"', e.amt, e.mon, e.fop ? 'Так' : 'Ні', e.note || ''].join(','));
+  });
+  var blob = new Blob(['\uFEFF' + rows.join('\n')], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'frilanceos.csv';
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════════════
+// CLOSE MODALS ON OVERLAY CLICK
+// ══════════════════════════════════════════════════════════════
+document.querySelectorAll('.overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) {
+    if (e.target === el) el.classList.remove('open');
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+load();
+el('eMon').value = nowMon();
+el('cSince').value = nowMon();
+refreshCats();
+goPage('content', document.querySelector('.nav-btn'));
+</script>
+</body>
+</html>
