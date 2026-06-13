@@ -204,15 +204,29 @@ tr:hover td{background:#ffffff03}
 @media(max-width:600px){.fab{display:flex}}
 
 @media(max-width:480px){
-  .hdr{padding:0 14px;height:52px}
-  .logo-name{font-size:15px}
-  .nav-btn{padding:12px 12px;font-size:12px}
-  .main{padding:14px 12px 80px}
-  .stats-row{gap:8px}
-  .stat-card{padding:12px}
-  .stat-card .val{font-size:19px}
-  .post-row{flex-wrap:wrap;gap:8px}
-  .post-row>div:last-child{width:100%;justify-content:flex-start}
+  .hdr{padding:0 14px;height:56px}
+  .logo-name{font-size:16px}
+  .logo-icon{width:34px;height:34px;font-size:18px}
+  .hdr-stat .val{font-size:20px}
+  .nav-btn{padding:13px 13px;font-size:13px}
+  .main{padding:16px 14px 90px}
+  .stats-row{gap:10px}
+  .stat-card{padding:14px}
+  .stat-card .val{font-size:22px}
+  .stat-card .lbl{font-size:10px}
+  .post-row{padding:13px 14px}
+  .post-row>div:last-child{width:100%;justify-content:flex-start;margin-top:4px}
+  .stt-btn{padding:5px 11px;font-size:11px}
+  .post-type{font-size:12px;padding:3px 9px}
+  .cl-name{font-size:15px}
+  .cl-meta{font-size:12px}
+  .tab-btn{padding:8px 16px;font-size:13px}
+  .btn-accent{padding:11px 20px;font-size:14px}
+  .btn-green{padding:11px 20px;font-size:14px}
+  .inp{padding:12px 14px;font-size:15px}
+  .field label{font-size:11px}
+  .kpi-card .usd{font-size:22px}
+  .kpi-card .lbl{font-size:10px}
 }
 </style>
 </head>
@@ -493,7 +507,7 @@ var INIT_TARGETS = [
 // STORAGE
 // ══════════════════════════════════════════════════════════════
 function load() {
-  // Version check — якщо стара версія, скидаємо дані
+  // Version check
   var ver = localStorage.getItem('fos_ver');
   if (ver !== '4') {
     localStorage.removeItem('fos_entries');
@@ -507,6 +521,8 @@ function load() {
   try { state.plans = JSON.parse(localStorage.getItem('fos_plans') || 'null') || INIT_PLANS.slice(); } catch(e) { state.plans = INIT_PLANS.slice(); }
   try { state.targets = JSON.parse(localStorage.getItem('fos_targets') || 'null') || INIT_TARGETS.slice(); } catch(e) { state.targets = INIT_TARGETS.slice(); }
   try { state.goal = JSON.parse(localStorage.getItem('fos_goal') || 'null') || {amount:5000,currency:'USD',type:'month'}; } catch(e) {}
+  
+  // Версія перевірена, дані завантажені
   activeContentClient = state.plans[0] ? state.plans[0].clientId : null;
   activeReportClient = state.clients[0] ? state.clients[0].id : null;
 }
@@ -929,18 +945,42 @@ function renderContent() {
     if (!plan.posts.length) {
       html += '<div class="card"><div class="empty-state"><div class="empty-icon">✍️</div><div class="empty-title">Немає постів</div><div class="empty-sub">Натисни «+ Пост» щоб додати перший</div></div></div>';
     } else {
-      plan.posts.forEach(function(post) {
+      // Сортуємо: заплановані/в роботі за датою (найближчі вгорі), виконані — вниз
+      var sorted = plan.posts.slice().sort(function(a, b) {
+        if (a.status === 'done' && b.status !== 'done') return 1;
+        if (a.status !== 'done' && b.status === 'done') return -1;
+        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      });
+      sorted.forEach(function(post) {
+        var isDone = post.status === 'done';
         var statusBtns = Object.keys(POST_ST).map(function(s) {
           var st = POST_ST[s];
           var cls = post.status === s ? st.cls : '';
           return '<button class="stt-btn ' + cls + '" onclick="setPostStatus(' + plan.id + ',' + post.id + ',\'' + s + '\')">' + st.l + '</button>';
         }).join('');
-        html += '<div class="post-row">';
-        html += '<div style="display:flex;align-items:center;flex:1"><span class="post-type">' + post.type + '</span><span style="font-size:13px">' + post.topic + '</span></div>';
-        html += '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--muted)">' + post.date.slice(5) + '</span>';
-        html += '<div style="display:flex;gap:3px">' + statusBtns + '</div>';
-        html += '<button onclick="delPost(' + plan.id + ',' + post.id + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;font-size:12px">✕</button>';
-        html += '</div></div>';
+
+        var today = new Date(); today.setHours(0,0,0,0);
+        var postDate = new Date(post.date);
+        var diffDays = Math.round((postDate - today) / (1000*60*60*24));
+        var dateColor = isDone ? '#333' : diffDays <= 0 ? '#EF4444' : diffDays <= 3 ? '#F59E0B' : '#484858';
+        var dateLabel = post.date.slice(5);
+        if (!isDone && diffDays === 0) dateLabel = '🔴 сьогодні';
+        else if (!isDone && diffDays === 1) dateLabel = '🟡 завтра';
+        else if (!isDone && diffDays < 0) dateLabel = '⚠️ прострочено';
+
+        html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:7px' + (isDone ? ';opacity:0.4' : '') + '">';
+        // Рядок 1: тип + назва
+        html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+        html += '<span class="post-type" style="flex-shrink:0">' + post.type + '</span>';
+        html += '<span style="font-size:13px;font-weight:500' + (isDone ? ';text-decoration:line-through;color:var(--muted)' : '') + '">' + post.topic + '</span>';
+        html += '</div>';
+        // Рядок 2: дата + кнопки + видалити
+        html += '<div style="display:flex;align-items:center;gap:6px">';
+        html += '<span style="font-size:11px;font-weight:600;color:' + dateColor + ';min-width:70px;flex-shrink:0">' + dateLabel + '</span>';
+        html += '<div style="display:flex;gap:4px;flex:1">' + statusBtns + '</div>';
+        html += '<button onclick="delPost(' + plan.id + ',' + post.id + ')" style="background:#EF444418;border:1px solid #EF444330;color:#EF4444;cursor:pointer;padding:3px 8px;font-size:11px;border-radius:6px;font-weight:700;flex-shrink:0">✕</button>';
+        html += '</div>';
+        html += '</div>';
       });
     }
   }
@@ -1060,7 +1100,13 @@ function delPost(planId, postId) {
 }
 function setPostStatus(planId, postId, status) {
   state.plans = state.plans.map(function(p) {
-    return p.id === planId ? Object.assign({},p,{posts: p.posts.map(function(post) { return post.id === postId ? Object.assign({},post,{status:status}) : post; })}) : p;
+    return p.id === planId ? Object.assign({},p,{posts: p.posts.map(function(post) {
+      if (post.id !== postId) return post;
+      var updated = Object.assign({},post,{status:status});
+      if (status === 'done') updated.doneAt = new Date().toISOString();
+      else delete updated.doneAt;
+      return updated;
+    })}) : p;
   });
   save('fos_plans', state.plans);
   renderContent();
